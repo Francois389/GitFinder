@@ -38,7 +38,7 @@ public class ModelPrincipal {
         this.gitBashPath = gitBashPath;
     }
 
-    public Set<Repository> getRepositories() {
+    public HashSet<Repository> getRepositories() {
         return repositories;
     }
 
