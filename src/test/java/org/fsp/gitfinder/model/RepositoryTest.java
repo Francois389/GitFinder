@@ -1,11 +1,19 @@
 package org.fsp.gitfinder.model;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class RepositoryTest {
+
+    private Repository repository;
+
+    @BeforeEach
+    void setUp() {
+        repository = new Repository("E:\\GitFinder", "GitFinder", "", "");
+    }
 
     @Test
     @DisplayName("Le chemin spécifié n'existe pas")
@@ -59,10 +67,23 @@ class RepositoryTest {
     }
 
 
+    @Test
+    @DisplayName("Les deux Repository ont le même nom et le même chemin")
+    void testEqualsMemeAttribut() {
+        //Given un Repository avec les mêmes attributs
+        Repository repository2 = new Repository(repository.getChemin(), repository.getNom(), "", "");
 
-
+        //When, on compare les deux Repository
+        //Then les deux Repository sont égaux
+        assertEquals(repository, repository2);
+    }
 
     @Test
-    void testEquals() {
+    @DisplayName("Un Repository est égal à lui-même")
+    void testEqualsMemeObjet() {
+        //Given un Repository
+        //When, on compare le Repository à lui-même
+        //Then le Repository est égal à lui-même
+        assertEquals(repository, repository);
     }
 }

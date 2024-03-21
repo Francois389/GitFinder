@@ -5,13 +5,16 @@
 
 package org.fsp.gitfinder.model;
 
+import javafx.scene.image.Image;
+
 import java.io.File;
+import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * @author François de Saint Palais
  */
-public class Repository {
+public class Repository implements Serializable {
 
     private String chemin;
     private String nom;
@@ -29,6 +32,14 @@ public class Repository {
         this.nom = nom;
         this.description = description;
         this.image = image;
+    }
+
+    public Repository(String chemin, String nom, String description) {
+        this(chemin, nom, description, null);
+    }
+
+    public Repository(String chemin, String nom) {
+        this(chemin, nom, null, null);
     }
 
     /**
@@ -64,8 +75,12 @@ public class Repository {
         return description;
     }
 
-    public String getImage() {
+    public String getURLImage() {
         return image;
+    }
+
+    public Image getImage() {
+        return new Image(image);
     }
 
     @Override
