@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Callback;
+import org.fsp.gitfinder.GitBashLauncher;
 import org.fsp.gitfinder.factorie.RepositoryListViewCellFactorie;
 import org.fsp.gitfinder.model.ModelPrincipal;
 import org.fsp.gitfinder.model.Repository;
@@ -32,10 +33,6 @@ public class MainControleur {
 
     @FXML
     void initialize() {
-        //<--STUB
-        Repository repo = new Repository("E:\\FilmeOK", "FilmOK", "Un projet de gestion de dépôts git");
-        model.getRepositories().add(repo);
-        //-->
 
         repositorieObservableList.setAll(model.getRepositories());
 
@@ -51,7 +48,8 @@ public class MainControleur {
         listeRepos.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 System.out.println(newValue);
-
+                model.setRepositorySelectionner(newValue);
+                GitBashLauncher.launch();
             }
         });
     }

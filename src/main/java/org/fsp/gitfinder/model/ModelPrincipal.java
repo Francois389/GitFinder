@@ -19,6 +19,8 @@ public class ModelPrincipal {
 
     private HashSet<Repository> repositories;
 
+    private Repository repositorySelectionner;
+
     private ModelPrincipal() {
         repositories = new HashSet<>();
     }
@@ -44,5 +46,13 @@ public class ModelPrincipal {
 
     public void setRepositories(HashSet<Repository> repositories) {
         this.repositories = repositories;
+    }
+
+    public Repository getRepositorySelectionner() {
+        return repositorySelectionner;
+    }
+
+    public void setRepositorySelectionner(Repository repositorySelectionner) {
+        this.repositorySelectionner = repositorySelectionner;
     }
 }
