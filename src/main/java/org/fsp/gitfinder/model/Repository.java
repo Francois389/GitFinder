@@ -16,10 +16,10 @@ import java.util.Objects;
  */
 public class Repository implements Serializable {
 
-    private String chemin;
-    private String nom;
-    private String description;
-    private String image;
+    private final String chemin;
+    private final String nom;
+    private final String description;
+    private final String image;
 
     public Repository(String chemin, String nom, String description, String image) throws IllegalArgumentException {
         cheminRepositoryValide(chemin);

@@ -11,6 +11,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.util.Callback;
 import org.fsp.gitfinder.GitBashLauncher;
+import org.fsp.gitfinder.GitFinderApplication;
 import org.fsp.gitfinder.factorie.RepositoryListViewCellFactorie;
 import org.fsp.gitfinder.model.ModelPrincipal;
 import org.fsp.gitfinder.model.Repository;
@@ -34,6 +35,8 @@ public class MainControleur {
     @FXML
     void initialize() {
 
+        System.out.println(model.getRepositories());
+
         repositorieObservableList.setAll(model.getRepositories());
 
         listeRepos.setItems(repositorieObservableList);
@@ -48,8 +51,11 @@ public class MainControleur {
         listeRepos.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 System.out.println(newValue);
-                model.setRepositorySelectionner(newValue);
-                GitBashLauncher.launch();
+
+                if (!modifierButton.isSelected()) {
+                    model.setRepositorySelectionner(newValue);
+                    GitBashLauncher.launch();
+                }
             }
         });
     }
@@ -58,6 +64,7 @@ public class MainControleur {
         System.out.println(modifierButton.isSelected());
     }
 
-
-
+    public void onAjouterClick() {
+        GitFinderApplication.changerScene("ajouterRepo");
+    }
 }

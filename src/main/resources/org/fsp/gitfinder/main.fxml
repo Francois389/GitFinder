@@ -19,7 +19,7 @@
       </Label>
       <HBox alignment="CENTER" layoutX="23.0" layoutY="65.0" prefHeight="30.0" prefWidth="200.0" spacing="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
-            <Button mnemonicParsing="false" prefHeight="28.0" prefWidth="105.0" text="Ajouter">
+            <Button mnemonicParsing="false" onAction="#onAjouterClick" prefHeight="28.0" prefWidth="105.0" text="Ajouter">
                <graphic>
                   <ImageView fitHeight="20.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true" translateX="-9.0">
                      <image>
