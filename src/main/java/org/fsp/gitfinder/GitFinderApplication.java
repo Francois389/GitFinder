@@ -6,10 +6,12 @@
 package org.fsp.gitfinder;
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.LoadException;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.fsp.gitfinder.sauvegarde.GestionSauvegarde;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -38,13 +40,36 @@ public class GitFinderApplication extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        chargementApplication();
-
         fenetrePrincipale = stage;
-        changerScene("configGitPath");
+
+        chargementApplication();
+        chargerDonner();
+
         fenetrePrincipale.setTitle("FilmOK");
-        fenetrePrincipale.setResizable(false);
+//        fenetrePrincipale.setResizable(false);
+        fenetrePrincipale.setOnCloseRequest(event -> {
+            try {
+                quit();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        });
+
         fenetrePrincipale.show();
+    }
+
+    /**
+     * Charge les données de l'application.
+     */
+    private void chargerDonner() throws IOException {
+        boolean resultat = GestionSauvegarde.charge();
+        if (!resultat) {
+            System.out.println(STR."Impossible de charger les données");
+            changerScene("configGitPath");
+        } else {
+            System.out.println(STR."Données chargées");
+            changerScene("main");
+        }
     }
 
     /**
@@ -67,6 +92,7 @@ public class GitFinderApplication extends Application {
 
     /**
      * Charge une scène et bascule la vue vers cette scène.
+     *
      * @param nomFichier le nom du fichier fxml, sans l'extension
      */
     public static void loadEtChangerScene(String nomFichier) {
@@ -76,6 +102,7 @@ public class GitFinderApplication extends Application {
 
     /**
      * Bascule la vue vers une scène déjà chargée.
+     *
      * @param nomFichier le nom du fichier fxml, sans l'extension
      */
     public static void changerScene(String nomFichier) {
@@ -87,6 +114,7 @@ public class GitFinderApplication extends Application {
 
     /**
      * Charge un fichier fxml en Scene et l'ajoute à la liste des scènes.
+     *
      * @param nomFichier le nom du fichier fxml, sans l'extension
      */
     private static void loadScene(String nomFichier) {
@@ -118,6 +146,18 @@ public class GitFinderApplication extends Application {
                 e.printStackTrace();
             }
         }
+    }
+
+    /**
+     * Fonction appelé par les controllers pour quitter l'application
+     *
+     * @throws IOException   si une erreur survient lors de la sauvegarde
+     * @throws InternalError si une erreur survient lors de la sauvegarde
+     */
+    public static void quit() throws InternalError, IOException {
+        System.out.println("Quitting application");
+        GestionSauvegarde.sauvegarde();
+        Platform.exit();
     }
 
     public static void main(String[] args) {
