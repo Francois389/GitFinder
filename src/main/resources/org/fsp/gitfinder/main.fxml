@@ -1,14 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
-            xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.fsp.gitfinder.Main"
-            prefHeight="400.0" prefWidth="600.0">
-
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.fsp.gitfinder.controleur.MainController">
+   <children>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutY="19.0" prefHeight="17.0" prefWidth="226.0" text="Vos Repositories" textAlignment="CENTER" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <font>
+            <Font size="24.0" />
+         </font>
+      </Label>
+      <HBox alignment="CENTER" layoutX="23.0" layoutY="65.0" prefHeight="30.0" prefWidth="200.0" spacing="100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Button mnemonicParsing="false" prefHeight="28.0" prefWidth="105.0" text="Ajouter">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="29.0" pickOnBounds="true" preserveRatio="true" translateX="-9.0">
+                     <image>
+                        <Image url="@icon/plus-solid.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+            <ToggleButton fx:id="modifierButton" mnemonicParsing="false" onAction="#onModifierClick" text="Modifier" />
+         </children>
+      </HBox>
+      <ListView fx:id="listeRepos" layoutX="200.0" layoutY="100.0" prefHeight="256.0" prefWidth="540.0" AnchorPane.bottomAnchor="30.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="115.0" />
+   </children>
 </AnchorPane>
