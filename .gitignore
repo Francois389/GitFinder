@@ -40,3 +40,7 @@ build/
 data.ser
 
 images/
+
+exe/
+
+out/
