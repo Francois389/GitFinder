@@ -6,7 +6,6 @@
 package org.fsp.gitfinder.model;
 
 import java.util.HashSet;
-import java.util.Set;
 
 /**
  * @author François de Saint Palais
@@ -54,5 +53,17 @@ public class ModelPrincipal {
 
     public void setRepositorySelectionner(Repository repositorySelectionner) {
         this.repositorySelectionner = repositorySelectionner;
+    }
+
+    /**
+     * Ajoute un repository à la liste des repositories.
+     * @param repository le repository à ajouter
+     * @throws IllegalArgumentException si le repository existe déjà
+     */
+    public void ajouterRepository(Repository repository) throws IllegalArgumentException {
+        boolean estAjouter = repositories.add(repository);
+        if (!estAjouter) {
+            throw new IllegalArgumentException("Le repository existe déjà");
+        }
     }
 }

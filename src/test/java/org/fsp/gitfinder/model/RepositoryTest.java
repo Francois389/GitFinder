@@ -86,4 +86,26 @@ class RepositoryTest {
         //Then le Repository est égal à lui-même
         assertEquals(repository, repository);
     }
+
+    @Test
+    @DisplayName("Deux Repository qui ont des descriptions différentes sont identiques")
+    void testEqualsDescriptionDifferentes() {
+        //Given un Repository avec une description
+        Repository repository2 = new Repository(repository.getChemin(), repository.getNom(), "Description", "");
+
+        //When, on compare les deux Repository
+        //Then les deux Repository sont égaux
+        assertEquals(repository, repository2);
+    }
+
+    @Test
+    @DisplayName("Deux Repository qui ont des images différentes sont identiques")
+    void testEqualsImagesDifferentes() {
+        //Given un Repository avec une image
+        Repository repository2 = new Repository(repository.getChemin(), repository.getNom(), "", "image");
+
+        //When, on compare les deux Repository
+        //Then les deux Repository sont égaux
+        assertEquals(repository, repository2);
+    }
 }

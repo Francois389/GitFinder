@@ -21,8 +21,8 @@ public class Repository implements Serializable {
     private String description;
     private String image;
 
-    public Repository(String chemin, String nom, String description, String image) {
-        cheminExiste(chemin);
+    public Repository(String chemin, String nom, String description, String image) throws IllegalArgumentException {
+        cheminRepositoryValide(chemin);
 
         if (nom == null || nom.isEmpty()) {
             throw new IllegalArgumentException("Le nom du repositorie ne doit pas être vide");
@@ -34,21 +34,23 @@ public class Repository implements Serializable {
         this.image = image;
     }
 
-    public Repository(String chemin, String nom, String description) {
+    public Repository(String chemin, String nom, String description) throws IllegalArgumentException {
         this(chemin, nom, description, null);
     }
 
-    public Repository(String chemin, String nom) {
+    public Repository(String chemin, String nom) throws IllegalArgumentException {
         this(chemin, nom, null, null);
     }
 
     /**
-     * Vérifie que le chemin existe.
-     * Si le chemin n'existe pas, lève une exception.
+     * Vérifie que le chemin est un repository valide.<br>
+     * Si le chemin n'existe pas, lève une exception.<br>
+     * Si le chemin existe, mais ne contient pas de dossier <b><i>.git</i></b>, lève une exception.
+     * Sinon, le chemin est valide.
      *
      * @param chemin le chemin à vérifier
      */
-    private void cheminExiste(String chemin) {
+    public static void cheminRepositoryValide(String chemin) throws IllegalArgumentException{
         if (chemin == null) {
             throw new IllegalArgumentException("Le chemin ne peut pas être null");
         }
@@ -101,8 +103,6 @@ public class Repository implements Serializable {
     public int hashCode() {
         int result = chemin != null ? chemin.hashCode() : 0;
         result = 31 * result + (nom != null ? nom.hashCode() : 0);
-        result = 31 * result + (description != null ? description.hashCode() : 0);
-        result = 31 * result + (image != null ? image.hashCode() : 0);
         return result;
     }
 
