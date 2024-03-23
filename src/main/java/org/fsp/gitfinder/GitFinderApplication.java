@@ -10,6 +10,7 @@ import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.LoadException;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.fsp.gitfinder.sauvegarde.GestionSauvegarde;
 
@@ -17,12 +18,14 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 /**
  * @author François de Saint Palais
  */
 public class GitFinderApplication extends Application {
 
+    private static final Image logoApplication = new Image(Objects.requireNonNull(GitFinderApplication.class.getResource("logoApplication.png")).toString());
 
     public static final File IMAGES_FOLDER = new File("images");
     /**
@@ -48,7 +51,8 @@ public class GitFinderApplication extends Application {
         chargerDonnee();
 
         fenetrePrincipale.setTitle("GitFinder");
-//        fenetrePrincipale.setResizable(false);
+        fenetrePrincipale.setResizable(false);
+        fenetrePrincipale.getIcons().add(logoApplication);
         fenetrePrincipale.setOnCloseRequest(event -> {
             try {
                 quit();
