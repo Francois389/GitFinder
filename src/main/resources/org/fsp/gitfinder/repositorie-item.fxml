@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane fx:id="pane" prefHeight="74.0" prefWidth="254.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="pane" prefHeight="74.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox alignment="CENTER" layoutX="10.0" layoutY="10.0" prefHeight="50.0" prefWidth="50.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
@@ -18,12 +18,12 @@
             </ImageView>
          </children>
       </VBox>
-      <Label fx:id="nomRepo" layoutX="81.0" layoutY="5.0" prefHeight="17.0" prefWidth="89.0" text="Nom Repo" AnchorPane.leftAnchor="81.0" AnchorPane.topAnchor="5.0">
+      <Label fx:id="nomRepo" layoutX="81.0" layoutY="5.0" prefHeight="25.0" prefWidth="206.0" text="Nom Repo" AnchorPane.leftAnchor="81.0" AnchorPane.topAnchor="5.0">
          <font>
             <Font size="16.0" />
          </font>
       </Label>
-      <Label fx:id="chemin" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="172.0" layoutY="8.0" prefHeight="17.0" prefWidth="72.0" text="Chemin" AnchorPane.leftAnchor="172.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="8.0" />
+      <Label fx:id="chemin" alignment="CENTER_RIGHT" contentDisplay="RIGHT" layoutX="291.0" layoutY="8.0" prefHeight="17.0" prefWidth="199.0" text="Chemin" AnchorPane.leftAnchor="291.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="8.0" />
       <Label fx:id="description" alignment="TOP_LEFT" layoutX="81.0" layoutY="34.0" prefHeight="36.0" prefWidth="198.0" text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec et tellus in nisi congue pharetra. Sed nec dolor vitae nisl pulvinar sollicitudin. Aenean ex metus, porta et porta sed, scelerisque vel eros. Nam ullamcorper bibendum viverra. Nullam faucibus, nunc a ultrices tincidunt, lorem quam luctus lacus, quis tristique ipsum felis vel dui. Aliquam finibus erat sed vestibulum posuere. Aenean sollicitudin, orci eget eleifend vestibulum, massa mi dignissim enim" wrapText="true" AnchorPane.leftAnchor="81.0" AnchorPane.rightAnchor="11.0">
          <font>
             <Font size="11.0" />
