@@ -20,6 +20,8 @@ public class ModelPrincipal {
 
     private Repository repositorySelectionner;
 
+    private Repository repositoryAModifier;
+
     private ModelPrincipal() {
         repositories = new HashSet<>();
     }
@@ -65,5 +67,13 @@ public class ModelPrincipal {
         if (!estAjouter) {
             throw new IllegalArgumentException("Le repository existe déjà");
         }
+    }
+
+    public void setRepositoryAModifier(Repository repository) {
+        repositoryAModifier = repository;
+    }
+
+    public Repository getRepositoryAModifier() {
+        return repositoryAModifier;
     }
 }

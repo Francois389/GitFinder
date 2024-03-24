@@ -17,9 +17,9 @@
 <AnchorPane prefHeight="649.0" prefWidth="378.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.fsp.gitfinder.controleur.AjouterRepoControleur">
     <children>
-        <Label alignment="CENTER" layoutX="286.0" layoutY="23.0" text="Ajouter un repository local"
+        <Label fx:id="titre" alignment="CENTER" layoutX="286.0" layoutY="23.0" text="Ajouter un repository local"
                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
-        <Button onAction="#handelQuitter" layoutX="298.0" layoutY="28.0" mnemonicParsing="false" text="Quitter">
+        <Button layoutX="298.0" layoutY="28.0" mnemonicParsing="false" onAction="#handelQuitter" text="Quitter">
             <cursor>
                 <Cursor fx:constant="HAND"/>
             </cursor>
@@ -67,15 +67,21 @@
                 <Font size="10.0"/>
             </font>
         </Label>
-        <HBox alignment="CENTER" layoutY="579.0" prefHeight="40.0" prefWidth="378.0" spacing="100.0"
+        <HBox alignment="CENTER" layoutY="579.0" prefHeight="40.0" prefWidth="378.0" spacing="50.0"
               AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <children>
-                <Button onAction="#handleAjouterClick" mnemonicParsing="false" text="Ajouter">
+                <Button fx:id="btnAjouter" mnemonicParsing="false" onAction="#handleAjouterClick" text="Ajouter">
                     <cursor>
                         <Cursor fx:constant="HAND"/>
                     </cursor>
                 </Button>
-                <Button onAction="#handleAjouterEtQuitterClick" mnemonicParsing="false" text="Ajouter et Quitter">
+                <Button onAction="#enregistrer" fx:id="btnEnregistrer" mnemonicParsing="false" text="Enregistrer">
+                    <cursor>
+                        <Cursor fx:constant="HAND"/>
+                    </cursor>
+                </Button>
+                <Button fx:id="btnAjouterEtQuitter" mnemonicParsing="false" onAction="#handleAjouterEtQuitterClick"
+                        text="Ajouter et Quitter">
                     <cursor>
                         <Cursor fx:constant="HAND"/>
                     </cursor>

@@ -41,6 +41,12 @@ public class AjouterRepoControleur {
     public ImageView statusChemin;
     @FXML
     public Label erreurCheminInvalide;
+    @FXML
+    public Button btnAjouter;
+    @FXML
+    public Button btnEnregistrer;
+    @FXML
+    public Button btnAjouterEtQuitter;
 
     /**
      * L'image pour indiquer que le chemin est valide
@@ -68,13 +74,16 @@ public class AjouterRepoControleur {
 
     @FXML
     void initialize() {
+        // On charge l'image de status
         try {
             statusOK = new Image(Objects.requireNonNull(GitFinderApplication.class.getResourceAsStream("icon/check-solid.png")));
         } catch (NullPointerException e) {
-            //Si une des images n'a pas pu être chargée, on n'affiche pas le status
+            //Si l'image n'a pas pu être chargée, on n'affiche pas le status
             statusChemin.setVisible(false);
             System.err.println("Impossible de charger les images de status");
         }
+
+        // On initialise l'alerte d'aide sur les chemins
         alert.setTitle("Aide sur les chemins");
         alert.setHeaderText("Les chemins de repository");
         alert.setContentText(
@@ -82,12 +91,40 @@ public class AjouterRepoControleur {
                         Un chemin de repository est un chemin vers un dossier contenant un dossier .git.
                         Ce dossier .git est un dossier caché qui contient les informations de git.
                                                 
-                        Par exemple, si vous avez un repository dans le dossier D:\\monrepo, alors le dossier D:\\monrepo\\.git doit exister."""
-        );
+                        Par exemple, si vous avez un repository dans le dossier D:\\monrepo, alors le dossier D:\\monrepo\\.git doit exister.""");
 
+        // On cache l'erreur de chemin invalide
         erreurCheminInvalide.setVisible(false);
 
         initEventListener();
+
+
+
+        if (model.getRepositoryAModifier() != null) {
+            remplirChampsReposAModifier();
+            
+            btnEnregistrer.setVisible(true);
+            btnAjouter.setVisible(false);
+            btnAjouterEtQuitter.setVisible(false);
+        } else {
+            btnEnregistrer.setVisible(false);
+            btnAjouter.setVisible(true);
+            btnAjouterEtQuitter.setVisible(true);
+        }
+    }
+
+    /**
+     * Remplit les champs avec les informations du repository à modifier
+     */
+    private void remplirChampsReposAModifier() {
+        Repository repository = model.getRepositoryAModifier();
+        nomInput.setText(repository.getNom());
+        cheminInput.setText(repository.getChemin());
+        descriptionInput.setText(repository.getDescription());
+
+        if (repository.getURLImage() != null) {
+            imageRepo.setImage(repository.getImage());
+        }
     }
 
     /**
@@ -333,6 +370,7 @@ public class AjouterRepoControleur {
     /**
      * Vérifie que les champs obligatoire sont valides et saisies.
      * Si ce n'est pas le cas, on affiche une alerte.
+     * @return true si les champs sont valides, false sinon
      */
     private boolean assureChampsValides() {
         boolean valide = true;
@@ -389,5 +427,18 @@ public class AjouterRepoControleur {
 
     public void handelQuitter(ActionEvent actionEvent) {
         retourMain();
+    }
+
+    public void enregistrer(ActionEvent actionEvent) {
+        if (assureChampsValides()) {
+            Repository repository = model.getRepositoryAModifier();
+            repository.setNom(nomInput.getText());
+            repository.setChemin(cheminInput.getText());
+            repository.setDescription(descriptionInput.getText());
+            if (imageRepoEstModifiee) {
+                repository.setImage(imageRepo.getImage());
+            }
+            retourMain();
+        }
     }
 }

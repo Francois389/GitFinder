@@ -48,23 +48,37 @@ public class MainControleur {
         });
 
         // Ajout d'un ChangeListener pour détecter la sélection d'un élément
-        listeRepos.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null) {
-                System.out.println(newValue);
-
-                if (!modifierButton.isSelected()) {
-                    model.setRepositorySelectionner(newValue);
-                    GitBashLauncher.launch();
-                }
-            }
+        listeRepos.getSelectionModel().selectedItemProperty()
+                .addListener((observable, oldValue, newValue) -> {
+            handleRepoClick(newValue);
         });
+    }
+
+    private void handleRepoClick(Repository repositoryClique) {
+        model.setRepositoryAModifier(null);
+
+        if (repositoryClique != null) {
+            System.out.println(repositoryClique);
+
+            if (!modifierButton.isSelected()) {
+                model.setRepositorySelectionner(repositoryClique);
+                GitBashLauncher.launch();
+            } else {
+                model.setRepositoryAModifier(repositoryClique);
+                GitFinderApplication.loadEtChangerScene("ajouterRepo");
+            }
+        }
     }
 
     public void onModifierClick() {
         System.out.println(modifierButton.isSelected());
+        //Désélectionne l'item sélectionné dans la liste
+        //Si un element est déjà sélectionné, alors l'application empêche
+        // de cliquer sur l'élément
+        listeRepos.getSelectionModel().clearSelection();
     }
 
     public void onAjouterClick() {
-        GitFinderApplication.changerScene("ajouterRepo");
+        GitFinderApplication.loadEtChangerScene("ajouterRepo");
     }
 }
