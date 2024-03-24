@@ -21,6 +21,8 @@ import java.util.HashMap;
 import java.util.Objects;
 
 /**
+ * Initialise les ressources de l'application charge la sauvegarde et affiche la fenêtre principale.
+ * Lorsque l'application est fermée, effectuée la sauvegarde.
  * @author François de Saint Palais
  */
 public class GitFinderApplication extends Application {
