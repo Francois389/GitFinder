@@ -25,10 +25,18 @@ import java.nio.file.*;
 import java.util.Objects;
 
 /**
+ * Contrôleur pour la vue d'ajout et de modification de repository.
  * @author François de Saint Palais
  */
-public class AjouterRepoControleur {
-    public static final String[] EXTENSION_IMAGE_POSSIBLE = {"*.png", "*.jpg", "*.jpeg", "*.gif"};
+public class FormulaireRepositoryControleur {
+
+    /**
+     * Les extensions de fichiers autorisées pour les images de repository
+     */
+    public static final FileChooser.ExtensionFilter EXTENSION_IMAGE_AUTORISE =
+            new FileChooser.ExtensionFilter("Images du repository",
+                    new String[]{"*.png", "*.jpg", "*.jpeg", "*.gif"});
+
     @FXML
     public TextField nomInput;
     @FXML
@@ -54,9 +62,14 @@ public class AjouterRepoControleur {
     private static Image statusOK;
 
     /**
+     * Une image de placeholder pour l'image du repository
+     */
+    private static Image imagePlaceholder;
+
+    /**
      * Une alerte pour afficher de l'aide sur les chemins de repository
      */
-    private static final Alert alert = new Alert(Alert.AlertType.INFORMATION);
+    private static final Alert aideCheminRepository = new Alert(Alert.AlertType.INFORMATION);
 
     /**
      * Lors de la selection d'un dossier, le dossier parent est enregistré ici.
@@ -83,10 +96,13 @@ public class AjouterRepoControleur {
             System.err.println("Impossible de charger les images de status");
         }
 
+        // On charge l'image de placeholder
+        imagePlaceholder = imageRepo.getImage();
+
         // On initialise l'alerte d'aide sur les chemins
-        alert.setTitle("Aide sur les chemins");
-        alert.setHeaderText("Les chemins de repository");
-        alert.setContentText(
+        aideCheminRepository.setTitle("Aide sur les chemins");
+        aideCheminRepository.setHeaderText("Les chemins de repository");
+        aideCheminRepository.setContentText(
                 """
                         Un chemin de repository est un chemin vers un dossier contenant un dossier .git.
                         Ce dossier .git est un dossier caché qui contient les informations de git.
@@ -98,15 +114,17 @@ public class AjouterRepoControleur {
 
         initEventListener();
 
-
-
         if (model.getRepositoryAModifier() != null) {
+            // Si on est en mode modification, on remplit les champs
+            // avec les informations du repository à modifier
             remplirChampsReposAModifier();
-            
+
+            // Et on affiche le bouton "Enregistrer" à la place des boutons "Ajouter"
             btnEnregistrer.setVisible(true);
             btnAjouter.setVisible(false);
             btnAjouterEtQuitter.setVisible(false);
         } else {
+            // Sinon, on affiche les boutons "Ajouter" et "Ajouter et quitter"
             btnEnregistrer.setVisible(false);
             btnAjouter.setVisible(true);
             btnAjouterEtQuitter.setVisible(true);
@@ -144,7 +162,7 @@ public class AjouterRepoControleur {
         });
 
         erreurCheminInvalide.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            alert.showAndWait();
+            aideCheminRepository.showAndWait();
         });
 
         imageRepo.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
@@ -214,22 +232,35 @@ public class AjouterRepoControleur {
         if (dossierSelectionner != null) {
             //On enregistre le dossier parent pour ne pas avoir à parcourir l'arborescence à chaque fois
             cheminFavorisDossier = dossierSelectionner.getParent();
-
-            //On met à jour le chemin du repository
-            cheminInput.setText(dossierSelectionner.getAbsolutePath());
-
-
-            //On met à jour le nom du repository si celui-ci est vide ou différent du nom du dossier sélectionné
-            String nomDossier = dossierSelectionner.getName();
-            if (nomInput.getText().isEmpty() || !nomInput.getText().equals(nomDossier)) {
-                nomInput.setText(nomDossier);
-            }
-
-            //On met à jour la description du repository si celle-ci est vide
-            //TODO: on peut utiliser le README si il existe
-        } else {
-            System.out.println("Aucun dossier sélectionné");
+            updateChampsEnFonctionDuChemin(dossierSelectionner);
         }
+    }
+
+    /**
+     * Met à jour les champs en fonction du chemin du dossier sélectionné<br>
+     * On récupère le maximum d'informations
+     * possibles à partir du dossier sélectionné.<br>
+     * On peut récupérer :
+     * <ul>
+     *     <li>Le chemin du repository</li>
+     *     <li>Le nom du repository</li>
+     *     <li>La description du repository <b>(TODO)</b></li>
+     * </ul>
+     *
+     * @param dossierSelectionner le dossier sélectionné
+     */
+    private void updateChampsEnFonctionDuChemin(File dossierSelectionner) {
+        //On met à jour le chemin du repository
+        cheminInput.setText(dossierSelectionner.getAbsolutePath());
+
+        //On met à jour le nom du repository si celui-ci est vide ou différent du nom du dossier sélectionné
+        String nomDossier = dossierSelectionner.getName();
+        if (nomInput.getText().isEmpty() || !nomInput.getText().equals(nomDossier)) {
+            nomInput.setText(nomDossier);
+        }
+
+        //On met à jour la description du repository si celle-ci est vide
+        //TODO: on peut utiliser le README si il existe
     }
 
     /**
@@ -243,7 +274,7 @@ public class AjouterRepoControleur {
         }
 
         fileChooser.setTitle("Choisir une image");
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Images du repository", EXTENSION_IMAGE_POSSIBLE));
+        fileChooser.getExtensionFilters().add(EXTENSION_IMAGE_AUTORISE);
 
         File image = fileChooser.showOpenDialog(null);
 
@@ -269,6 +300,8 @@ public class AjouterRepoControleur {
 
     /**
      * Gère le clic sur le bouton "Ajouter et quitter"
+     * Ajoute un repository à la liste des repositories
+     * et retourne à la vue principale si le repository est ajouté
      *
      * @param actionEvent l'événement de clic
      */
@@ -284,6 +317,7 @@ public class AjouterRepoControleur {
      *
      * @param origineString     le chemin absolu du fichier d'origine
      * @param destinationString le chemin absolu du fichier de destination
+     * @return le chemin absolu du fichier de destination
      * @throws IOException        si une erreur d'entrée/sortie survient
      * @throws URISyntaxException si une erreur survient lors de la conversion des chemins en URI
      */
@@ -291,12 +325,15 @@ public class AjouterRepoControleur {
         Path origine = Path.of(new URI(origineString.replace("\\", "/")));
         Path destination = Path.of(new URI(destinationString.replace("\\", "/")));
 
+        //Les chemins doivent être absolus
+        //Si ce n'est pas le cas, on lève une exception
         if (!origine.isAbsolute()) {
             throw new IllegalArgumentException("Le chemin d'origine doit être absolu");
         }
         if (!destination.isAbsolute()) {
             throw new IllegalArgumentException("Le chemin de destination doit être absolu");
         }
+
         return Files.copy(origine, destination, StandardCopyOption.REPLACE_EXISTING);
     }
 
@@ -336,14 +373,15 @@ public class AjouterRepoControleur {
                 }
             }
 
+            // On ajoute le repository à la liste des repositories enregistrés
             try {
                 Repository repository = new Repository(chemin, nom, description, image);
                 model.ajouterRepository(repository);
-
                 estAjouter = true;
 
                 reinitialiseLesChamps();
             } catch (IllegalArgumentException e) {
+                //Si le repository existe déjà, on affiche une alerte
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erreur");
                 alert.setHeaderText("Repository déjà existant");
@@ -363,13 +401,14 @@ public class AjouterRepoControleur {
         nomInput.clear();
         cheminInput.clear();
         descriptionInput.clear();
-        imageRepo.setImage(null);
+        imageRepo.setImage(imagePlaceholder);
         imageRepoEstModifiee = false;
     }
 
     /**
      * Vérifie que les champs obligatoire sont valides et saisies.
      * Si ce n'est pas le cas, on affiche une alerte.
+     *
      * @return true si les champs sont valides, false sinon
      */
     private boolean assureChampsValides() {
@@ -408,7 +447,7 @@ public class AjouterRepoControleur {
     }
 
     /**
-     * Retourne à la vue principale
+     * Retourne à la vue principale après confirmation de l'utilisateur
      */
     private static void retourMain() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Êtes-vous sûr de vouloir retourner à la vue principale ?");
@@ -425,10 +464,18 @@ public class AjouterRepoControleur {
         });
     }
 
+    /**
+     * Gère le clic sur le bouton "Quitter"
+     * Retourne à la vue principale
+     */
     public void handelQuitter(ActionEvent actionEvent) {
         retourMain();
     }
 
+    /**
+     * Gère le clic sur le bouton "Enregistrer"
+     * Enregistre les modifications apportées à un repository
+     */
     public void enregistrer(ActionEvent actionEvent) {
         if (assureChampsValides()) {
             Repository repository = model.getRepositoryAModifier();

@@ -15,7 +15,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane prefHeight="649.0" prefWidth="378.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="org.fsp.gitfinder.controleur.AjouterRepoControleur">
+            fx:controller="org.fsp.gitfinder.controleur.FormulaireRepositoryControleur">
     <children>
         <Label fx:id="titre" alignment="CENTER" layoutX="286.0" layoutY="23.0" text="Ajouter un repository local"
                AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>

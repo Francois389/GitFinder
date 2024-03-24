@@ -91,7 +91,7 @@ public class GitFinderApplication extends Application {
 
         ressources.add("configGitPath");
         ressources.add("main");
-        ressources.add("ajouterRepo");
+        ressources.add("formulaireRepository");
 
         for (String ressource : ressources) {
             loadScene(ressource);
