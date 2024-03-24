@@ -16,12 +16,12 @@ import java.util.Objects;
  */
 public class Repository implements Serializable {
 
-    private final String chemin;
-    private final String nom;
-    private final String description;
-    private final String image;
+    private String chemin;
+    private String nom;
+    private String description;
+    private String cheminImage;
 
-    public Repository(String chemin, String nom, String description, String image) throws IllegalArgumentException {
+    public Repository(String chemin, String nom, String description, String cheminImage) throws IllegalArgumentException {
         cheminRepositoryValide(chemin);
 
         if (nom == null || nom.isEmpty()) {
@@ -31,7 +31,7 @@ public class Repository implements Serializable {
         this.chemin = chemin;
         this.nom = nom;
         this.description = description;
-        this.image = image;
+        this.cheminImage = cheminImage;
     }
 
     public Repository(String chemin, String nom, String description) throws IllegalArgumentException {
@@ -78,11 +78,21 @@ public class Repository implements Serializable {
     }
 
     public String getURLImage() {
-        return image;
+        return cheminImage;
     }
 
+    /**
+     * Retourne l'image du repository.
+     * Si la création de l'image échoue, retourne null.
+     * @return l'image du repository ou null si l'image n'existe pas
+     */
     public Image getImage() {
-        return new Image(image);
+        Image resultat = null;
+        try {
+            resultat = new Image(cheminImage);
+        } catch (Exception _) {}
+
+        return resultat;
     }
 
     @Override
@@ -110,5 +120,32 @@ public class Repository implements Serializable {
     public String toString() {
         String s = STR."\{nom} : (\{chemin})";
         return s;
+    }
+
+    public void setNom(String nom) {
+        if (nom == null || nom.isEmpty()) {
+            throw new IllegalArgumentException("Le nom du repositorie ne doit pas être vide");
+        }
+        this.nom = nom;
+    }
+
+    public void setChemin(String chemin) {
+        cheminRepositoryValide(chemin);
+
+        this.chemin = chemin;
+    }
+
+    public void setDescription(String text) {
+        this.description = text;
+    }
+
+    public void setImage(Image image) {
+        if (image != null) {
+            this.cheminImage = image.getUrl();
+        }
+    }
+
+    public void setCheminImage(String url) {
+        this.cheminImage = url;
     }
 }
