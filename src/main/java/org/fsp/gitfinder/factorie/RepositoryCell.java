@@ -9,9 +9,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import org.fsp.gitfinder.GitFinderApplication;
+import org.fsp.gitfinder.model.ModelPrincipal;
 import org.fsp.gitfinder.model.Repository;
 
 import java.io.IOException;
@@ -38,7 +40,7 @@ public class RepositoryCell {
     /**
      * Constructeur de la classe RepositoryCellController.
      */
-    public RepositoryCell() {
+    public RepositoryCell(Repository repo) {
         FXMLLoader fxmlLoader = new FXMLLoader(GitFinderApplication.class.getResource("repositorie-item.fxml"));
         fxmlLoader.setController(this);
         try {
@@ -46,6 +48,7 @@ public class RepositoryCell {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        setInfo(repo);
     }
 
     /**
