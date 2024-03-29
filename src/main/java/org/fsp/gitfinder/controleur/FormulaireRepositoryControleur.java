@@ -35,7 +35,9 @@ public class FormulaireRepositoryControleur {
      */
     public static final FileChooser.ExtensionFilter EXTENSION_IMAGE_AUTORISE =
             new FileChooser.ExtensionFilter("Images du repository",
-                    new String[]{"*.png", "*.jpg", "*.jpeg", "*.gif"});
+                    "*.png", "*.jpg", "*.jpeg", "*.gif");
+
+    public static final Notification CONFIRMATION_AJOUT = new Notification("Le repository a été ajouté avec succès");
 
     @FXML
     public TextField nomInput;
@@ -295,7 +297,9 @@ public class FormulaireRepositoryControleur {
      */
     public void handleAjouterClick(ActionEvent actionEvent) throws URISyntaxException, NoSuchFileException {
         boolean estAjouter = ajouterRepos();
-        //TODO afficher une confirmation si le repository est ajouté
+        if (estAjouter) {
+            CONFIRMATION_AJOUT.show();
+        }
     }
 
     /**
@@ -308,6 +312,7 @@ public class FormulaireRepositoryControleur {
     public void handleAjouterEtQuitterClick(ActionEvent actionEvent) throws URISyntaxException, NoSuchFileException {
         boolean estAjouter = ajouterRepos();
         if (estAjouter) {
+            CONFIRMATION_AJOUT.show();
             retourMain();
         }
     }
