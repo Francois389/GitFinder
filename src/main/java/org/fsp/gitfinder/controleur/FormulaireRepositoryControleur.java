@@ -14,6 +14,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
 import org.fsp.gitfinder.GitFinderApplication;
+import org.fsp.gitfinder.Notification;
 import org.fsp.gitfinder.model.ModelPrincipal;
 import org.fsp.gitfinder.model.Repository;
 
@@ -22,7 +23,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Contrôleur pour la vue d'ajout et de modification de repository.
@@ -39,6 +44,11 @@ public class FormulaireRepositoryControleur {
                     "*.png", "*.jpg", "*.jpeg", "*.gif");
 
     public static final Notification CONFIRMATION_AJOUT = new Notification("Le repository a été ajouté avec succès");
+
+    //Liste des potentiels mots clé pour la description dans un README
+    private static final ArrayList<String> motsCleDescription = new ArrayList<>(List.of("description", "déscription", "Description", "Déscription",
+            "DESCRIPTION", "desc", "Desc", "DESC", "Présentation",
+            "présentation", "Presentation", "presentation"));
 
     @FXML
     public TextField nomInput;
@@ -264,6 +274,66 @@ public class FormulaireRepositoryControleur {
 
         //On met à jour la description du repository si celle-ci est vide
         //TODO: on peut utiliser le README si il existe
+        String cheminReadme = STR."\{dossierSelectionner.getAbsolutePath()}\\README.md";
+        File readme = new File(cheminReadme);
+        if (readme.exists()) {
+            String descriptionRecupere = getDescriptionDepuisREADME(readme);
+
+            if (descriptionInput.getText().isEmpty() || !descriptionInput.getText().equals(descriptionRecupere)) {
+                descriptionInput.setText(descriptionRecupere);
+            }
+
+            System.out.println("Contenu du README :");
+            System.out.println(descriptionRecupere);
+        }
+    }
+
+    /**
+     * Renvoie la description issue d'un fichier README.md<\br>
+     * On recherche pour le debut d'une section de déscription.<br>
+     * Une section de description commence par un titre 2 MarkDown
+     * suivie de 1 des mots clé présent dans
+     * {@link FormulaireRepositoryControleur#motsCleDescription}
+     * @param readme Le fichier README.md à analyser
+     * @return la description récupèré ou sinon une string vide
+     */
+    private String getDescriptionDepuisREADME(File readme) {
+        StringBuilder description = new StringBuilder();
+
+        boolean onAAtteintLaDescription = false;
+
+        try (Stream<String> lines = Files.lines(readme.toPath())) {
+            for (String ligne : lines.toList()) {
+                if (onAAtteintLaDescription) {
+                    if (!ligne.isEmpty()) {
+                        description.append(STR."\{ligne}\n");
+                        // On s'arrête quand on a atteint une autre section
+                        onAAtteintLaDescription = ligne.matches("^## ");
+                    }
+                } else {
+                    onAAtteintLaDescription = estBaliseDescription(ligne);
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return description.toString();
+    }
+
+    /**
+     * Retourne true si la ligne est identifié comme étant un entête pour une
+     * description, false sinon
+     * @param ligne La ligne analyser
+     * @return true si la ligne est identifié comme étant un entête
+     * pour une description, false sinon
+     */
+    private static boolean estBaliseDescription(String ligne) {
+        boolean estDescription = false;
+        for (int i = 0; i < motsCleDescription.size() && !estDescription; i++) {
+            estDescription = ligne.contains(STR."## \{motsCleDescription.get(i)}");
+        }
+        return estDescription;
     }
 
     /**
