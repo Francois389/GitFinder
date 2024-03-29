@@ -9,7 +9,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.layout.AnchorPane;
 import javafx.util.Callback;
+import org.fsp.gitfinder.Notification;
 import org.fsp.gitfinder.GitBashLauncher;
 import org.fsp.gitfinder.GitFinderApplication;
 import org.fsp.gitfinder.factorie.RepositoryListViewCellFactorie;
@@ -24,9 +26,10 @@ public class MainControleur {
 
     @FXML
     public ListView<Repository> listeRepos;
-
     @FXML
     public ToggleButton modifierButton;
+    @FXML
+    public AnchorPane pane;
 
     private final ObservableList<Repository> repositorieObservableList = FXCollections.observableArrayList();
 
@@ -47,10 +50,15 @@ public class MainControleur {
             }
         });
 
-        // Ajout d'un ChangeListener pour détecter la sélection d'un élément
-        listeRepos.getSelectionModel().selectedItemProperty()
-                .addListener((observable, oldValue, newValue) -> {
-            handleRepoClick(newValue);
+        listeRepos.setOnMouseClicked(event -> {
+            handleRepoClick(listeRepos.getSelectionModel().getSelectedItem());
+        });
+
+        listeRepos.setOnKeyPressed(event -> {
+            if (   event.getCode().getName().equals("Enter")
+                || event.getCode().getName().equals("Space")) {
+                handleRepoClick(listeRepos.getSelectionModel().getSelectedItem());
+            }
         });
     }
 
