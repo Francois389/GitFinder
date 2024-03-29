@@ -71,6 +71,7 @@ public class GitFinderApplication extends Application {
      */
     private void chargerDonnee() throws IOException {
         boolean resultat = GestionSauvegarde.charge();
+        // Si les données n'ont pas pu être chargées, on affiche la scène de configuration du chemin de GitBash
         if (!resultat) {
             System.out.println("Impossible de charger les données");
             changerScene("configGitPath");
@@ -172,5 +173,9 @@ public class GitFinderApplication extends Application {
             IMAGES_FOLDER.mkdir();
         }
         launch(args);
+    }
+
+    public static Stage getFenetrePrincipale() {
+        return fenetrePrincipale;
     }
 }

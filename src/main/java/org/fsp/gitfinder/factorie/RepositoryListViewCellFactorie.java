@@ -17,8 +17,7 @@ public class RepositoryListViewCellFactorie extends ListCell<Repository> {
     protected void updateItem(Repository repos, boolean empty) {
         super.updateItem(repos, empty);
         if (repos != null) {
-            RepositoryCell data = new RepositoryCell();
-            data.setInfo(repos);
+            RepositoryCell data = new RepositoryCell(repos);
             setGraphic(data.getCell());
         }
     }

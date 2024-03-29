@@ -18,7 +18,7 @@ import java.io.IOException;
  */
 public class GitBashLauncher {
     /**
-     * Lance GitBash.
+     * Lance GitBash avec le chemin du repository sélectionné.
      */
     public static void launch() {
 
