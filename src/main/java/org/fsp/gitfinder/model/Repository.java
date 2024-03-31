@@ -8,6 +8,7 @@ package org.fsp.gitfinder.model;
 import javafx.scene.image.Image;
 
 import java.io.File;
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -15,6 +16,9 @@ import java.util.Objects;
  * @author François de Saint Palais
  */
 public class Repository implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     private String chemin;
     private String nom;
