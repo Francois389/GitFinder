@@ -25,6 +25,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -50,6 +51,9 @@ public class FormulaireRepositoryControleur {
     private static final ArrayList<String> motsCleDescription = new ArrayList<>(List.of("description", "déscription", "Description", "Déscription",
             "DESCRIPTION", "desc", "Desc", "DESC", "Présentation",
             "présentation", "Presentation", "presentation"));
+
+    private static final DateTimeFormatter dateFormatage =
+            DateTimeFormatter.ofPattern("dd-MM-yyyy_HHhmm-ss");
 
     @FXML
     public TextField nomInput;
@@ -453,7 +457,7 @@ public class FormulaireRepositoryControleur {
             String nom = nomInput.getText();
             String chemin = cheminInput.getText();
             String description = descriptionInput.getText();
-            String image = copieImage(nom, image);
+            String image = copieImage(nom, null);
 
             // On ajoute le repository à la liste des repositories enregistrés
             try {
@@ -495,10 +499,13 @@ public class FormulaireRepositoryControleur {
 
             String origine = imageRepo.getImage().getUrl();
             //Le chemin de l'image copié doit être unique
+            String nomImageUnique =
+                    STR."\{nomRepository}-\{LocalDateTime.now().format(dateFormatage)}.png";
+            
             File destination =
                     new File(
-                            STR."\{GitFinderApplication.IMAGES_FOLDER}\\" +
-                                    STR."\{nomRepository}-\{LocalDateTime.now()}.png"
+                    STR."\{GitFinderApplication.IMAGES_FOLDER}\\" +
+                            nomImageUnique
                     );
 
             /*
