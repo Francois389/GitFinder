@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+
 import org.fsp.gitfinder.GitFinderApplication;
 import org.fsp.gitfinder.Notification;
 import org.fsp.gitfinder.model.ModelPrincipal;
@@ -23,10 +24,10 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -67,8 +68,9 @@ public class FormulaireRepositoryControleur {
     @FXML
     public Button btnEnregistrer;
     @FXML
+    public Label titre;
+    @FXML
     public Button btnAjouterEtQuitter;
-
     /**
      * L'image pour indiquer que le chemin est valide
      */
@@ -145,6 +147,110 @@ public class FormulaireRepositoryControleur {
     }
 
     /**
+     * Gère le clic sur le bouton "Parcourir..."
+     * Ouvre une fenêtre de sélection de dossier.
+     * Si un dossier est sélectionné, le chemin est mis à jour.
+     * De plus on met à jour le nom du repository si celui-ci est vide ou différent du nom du dossier sélectionné.
+     */
+    public void handleParcourirDossierClick() {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setTitle("Choisir un dossier");
+        if (cheminFavorisDossier != null) {
+            directoryChooser.setInitialDirectory(new File(cheminFavorisDossier));
+        }
+
+        File dossierSelectionner = directoryChooser.showDialog(null);
+
+        if (dossierSelectionner != null) {
+            //On enregistre le dossier parent pour ne pas avoir à parcourir l'arborescence à chaque fois
+            cheminFavorisDossier = dossierSelectionner.getParent();
+            updateChampsEnFonctionDuChemin(dossierSelectionner);
+        }
+    }
+
+    /**
+     * Gère le clic sur le bouton "Parcourir" pour l'image du repository
+     * Ouvre une fenêtre de sélection d'image.
+     */
+    public void handleParcourirImageClick() {
+        FileChooser fileChooser = new FileChooser();
+        if (cheminFavorisImage != null) {
+            fileChooser.setInitialDirectory(new File(cheminFavorisImage));
+        }
+
+        fileChooser.setTitle("Choisir une image");
+        fileChooser.getExtensionFilters().add(EXTENSION_IMAGE_AUTORISE);
+
+        File image = fileChooser.showOpenDialog(null);
+
+        System.out.println(image);
+
+        if (image != null) {
+            //On enregistre le dossier parent pour ne pas avoir à parcourir l'arborescence à chaque fois
+            cheminFavorisImage = image.getParent();
+
+            imageRepo.setImage(new Image(image.toURI().toString()));
+            imageRepoEstModifiee = true;
+        }
+    }
+
+    /**
+     * Gère le clic sur le bouton "Ajouter"
+     * Ajoute un repository à la liste des repositories
+     *
+     * @param actionEvent l'événement de clic
+     */
+    public void handleAjouterClick(ActionEvent actionEvent) throws URISyntaxException, NoSuchFileException {
+        boolean estAjouter = ajouterRepos();
+        if (estAjouter) {
+            CONFIRMATION_AJOUT.show();
+        }
+    }
+
+    /**
+     * Gère le clic sur le bouton "Ajouter et quitter"
+     * Ajoute un repository à la liste des repositories
+     * et retourne à la vue principale si le repository est ajouté
+     *
+     * @param actionEvent l'événement de clic
+     */
+    public void handleAjouterEtQuitterClick(ActionEvent actionEvent) throws URISyntaxException, NoSuchFileException {
+        boolean estAjouter = ajouterRepos();
+        if (estAjouter) {
+            CONFIRMATION_AJOUT.show();
+            retourMain();
+        }
+    }
+
+    /**
+     * Gère le clic sur le bouton "Quitter"
+     * Retourne à la vue principale
+     */
+    public void handelQuitter(ActionEvent actionEvent) {
+        retourMain();
+    }
+
+    /**
+     * Gère le clic sur le bouton "Enregistrer"
+     * Enregistre les modifications apportées à un repository
+     */
+    public void enregistrer(ActionEvent actionEvent) throws NoSuchFileException, URISyntaxException {
+        if (assureChampsValides()) {
+            Repository repository = model.getRepositoryAModifier();
+            repository.setNom(nomInput.getText());
+            repository.setChemin(cheminInput.getText());
+            repository.setDescription(descriptionInput.getText());
+            if (imageRepoEstModifiee) {
+                repository.setCheminImage(
+                        copieImage(repository.getNom(),
+                                imageRepo.getImage().getUrl())
+                );
+            }
+            retourMain();
+        }
+    }
+
+    /**
      * Remplit les champs avec les informations du repository à modifier
      */
     private void remplirChampsReposAModifier() {
@@ -154,7 +260,9 @@ public class FormulaireRepositoryControleur {
         descriptionInput.setText(repository.getDescription());
 
         if (repository.getURLImage() != null) {
-            imageRepo.setImage(repository.getImage());
+            //On récupère l'image sans la charger
+            Image imageDuRepo = new Image(new File(repository.getURLImage()).toURI().toString());
+            imageRepo.setImage(imageDuRepo);
         }
     }
 
@@ -162,25 +270,15 @@ public class FormulaireRepositoryControleur {
      * Initialise les écouteurs d'événements
      */
     private void initEventListener() {
-        cheminInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            updateStatusChemin();
-        });
+        cheminInput.textProperty().addListener((observable, oldValue, newValue) -> updateStatusChemin());
 
-        erreurCheminInvalide.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> {
-            erreurCheminInvalide.setStyle("-fx-underline: true;");
-        });
+        erreurCheminInvalide.addEventFilter(MouseEvent.MOUSE_ENTERED, event -> erreurCheminInvalide.setStyle("-fx-underline: true;"));
 
-        erreurCheminInvalide.addEventFilter(MouseEvent.MOUSE_EXITED, event -> {
-            erreurCheminInvalide.setStyle("-fx-underline: false;");
-        });
+        erreurCheminInvalide.addEventFilter(MouseEvent.MOUSE_EXITED, event -> erreurCheminInvalide.setStyle("-fx-underline: false;"));
 
-        erreurCheminInvalide.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            aideCheminRepository.showAndWait();
-        });
+        erreurCheminInvalide.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> aideCheminRepository.showAndWait());
 
-        imageRepo.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
-            afficherImageGrand();
-        });
+        imageRepo.addEventFilter(MouseEvent.MOUSE_CLICKED, event -> afficherImageGrand());
     }
 
     /**
@@ -228,27 +326,6 @@ public class FormulaireRepositoryControleur {
         }
     }
 
-    /**
-     * Gère le clic sur le bouton "Parcourir..."
-     * Ouvre une fenêtre de sélection de dossier.
-     * Si un dossier est sélectionné, le chemin est mis à jour.
-     * De plus on met à jour le nom du repository si celui-ci est vide ou différent du nom du dossier sélectionné.
-     */
-    public void handleParcourirDossierClick() {
-        DirectoryChooser directoryChooser = new DirectoryChooser();
-        directoryChooser.setTitle("Choisir un dossier");
-        if (cheminFavorisDossier != null) {
-            directoryChooser.setInitialDirectory(new File(cheminFavorisDossier));
-        }
-
-        File dossierSelectionner = directoryChooser.showDialog(null);
-
-        if (dossierSelectionner != null) {
-            //On enregistre le dossier parent pour ne pas avoir à parcourir l'arborescence à chaque fois
-            cheminFavorisDossier = dossierSelectionner.getParent();
-            updateChampsEnFonctionDuChemin(dossierSelectionner);
-        }
-    }
 
     /**
      * Met à jour les champs en fonction du chemin du dossier sélectionné<br>
@@ -258,7 +335,7 @@ public class FormulaireRepositoryControleur {
      * <ul>
      *     <li>Le chemin du repository</li>
      *     <li>Le nom du repository</li>
-     *     <li>La description du repository <b>(TODO)</b></li>
+     *     <li>La description du repository</li>
      * </ul>
      *
      * @param dossierSelectionner le dossier sélectionné
@@ -274,7 +351,6 @@ public class FormulaireRepositoryControleur {
         }
 
         //On met à jour la description du repository si celle-ci est vide
-        //TODO: on peut utiliser le README si il existe
         String cheminReadme = STR."\{dossierSelectionner.getAbsolutePath()}\\README.md";
         File readme = new File(cheminReadme);
         if (readme.exists()) {
@@ -295,6 +371,7 @@ public class FormulaireRepositoryControleur {
      * Une section de description commence par un titre 2 MarkDown
      * suivie de 1 des mots clé présent dans
      * {@link FormulaireRepositoryControleur#motsCleDescription}
+     *
      * @param readme Le fichier README.md à analyser
      * @return la description récupèré ou sinon une string vide
      */
@@ -325,6 +402,7 @@ public class FormulaireRepositoryControleur {
     /**
      * Retourne true si la ligne est identifié comme étant un entête pour une
      * description, false sinon
+     *
      * @param ligne La ligne analyser
      * @return true si la ligne est identifié comme étant un entête
      * pour une description, false sinon
@@ -337,57 +415,6 @@ public class FormulaireRepositoryControleur {
         return estDescription;
     }
 
-    /**
-     * Gère le clic sur le bouton "Parcourir" pour l'image du repository
-     * Ouvre une fenêtre de sélection d'image.
-     */
-    public void handleParcourirImageClick() {
-        FileChooser fileChooser = new FileChooser();
-        if (cheminFavorisImage != null) {
-            fileChooser.setInitialDirectory(new File(cheminFavorisImage));
-        }
-
-        fileChooser.setTitle("Choisir une image");
-        fileChooser.getExtensionFilters().add(EXTENSION_IMAGE_AUTORISE);
-
-        File image = fileChooser.showOpenDialog(null);
-
-        if (image != null) {
-            //On enregistre le dossier parent pour ne pas avoir à parcourir l'arborescence à chaque fois
-            cheminFavorisImage = image.getParent();
-
-            imageRepo.setImage(new Image(image.toURI().toString()));
-            imageRepoEstModifiee = true;
-        }
-    }
-
-    /**
-     * Gère le clic sur le bouton "Ajouter"
-     * Ajoute un repository à la liste des repositories
-     *
-     * @param actionEvent l'événement de clic
-     */
-    public void handleAjouterClick(ActionEvent actionEvent) throws URISyntaxException, NoSuchFileException {
-        boolean estAjouter = ajouterRepos();
-        if (estAjouter) {
-            CONFIRMATION_AJOUT.show();
-        }
-    }
-
-    /**
-     * Gère le clic sur le bouton "Ajouter et quitter"
-     * Ajoute un repository à la liste des repositories
-     * et retourne à la vue principale si le repository est ajouté
-     *
-     * @param actionEvent l'événement de clic
-     */
-    public void handleAjouterEtQuitterClick(ActionEvent actionEvent) throws URISyntaxException, NoSuchFileException {
-        boolean estAjouter = ajouterRepos();
-        if (estAjouter) {
-            CONFIRMATION_AJOUT.show();
-            retourMain();
-        }
-    }
 
     /**
      * Copie un fichier "origine" vers le fichier "destination" en remplaçant si le fichier existe déjà
@@ -426,32 +453,14 @@ public class FormulaireRepositoryControleur {
             String nom = nomInput.getText();
             String chemin = cheminInput.getText();
             String description = descriptionInput.getText();
-            String image = null;
-
-            //Copier l'image dans le dossier des images
-            if (imageRepo.getImage() != null && imageRepoEstModifiee) {
-                String origine = imageRepo.getImage().getUrl();
-                File destination = new File(STR."\{GitFinderApplication.IMAGES_FOLDER}\\repository-\{nom}.png");
-
-                /*
-                 * Si l'image n'existe pas déjà, on la copie
-                 * Si l'image existe déjà cela veut dire qu'il existe un homonyme et que le repository en cours de création
-                 * ne sera pas ajouté à la liste des repositories (cf Repository.equals et ModelPrincipal.repositories)
-                 */
-                if (!destination.exists()) {
-                    try {
-                        Path destinationFinal = copierFichier(origine, STR."file:/\{destination.getAbsolutePath()}");
-                        image = destinationFinal.toUri().toString();
-                    } catch (NoSuchFileException e) {
-                        throw e;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+            String image = copieImage(nom, image);
 
             // On ajoute le repository à la liste des repositories enregistrés
             try {
+                System.out.println(chemin);
+                System.out.println(nom);
+                System.out.println(description);
+                System.out.println(image);
                 Repository repository = new Repository(chemin, nom, description, image);
                 model.ajouterRepository(repository);
                 estAjouter = true;
@@ -468,6 +477,50 @@ public class FormulaireRepositoryControleur {
         }
 
         return estAjouter;
+    }
+
+    /**
+     * Si l'image à été modifier, et que l'ImageView n'est pas null,
+     * on copie l'image saisie dans le dossier des images.
+     *
+     * @param nomRepository      Le nom du repository qui utilise l'image
+     * @param cheminImageInitial Le chemin initial de l'image
+     * @return le chemin de l'image si elle a été copiée ou le chemin initial sinon
+     * @throws URISyntaxException  si une erreur survient lors de la conversion des chemins en URI
+     * @throws NoSuchFileException si l'image saisie n'existe pas
+     */
+    private String copieImage(String nomRepository, String cheminImageInitial) throws URISyntaxException, NoSuchFileException {
+        if (imageRepoEstModifiee && imageRepo.getImage() != null) {
+            //Copier l'image dans le dossier des images
+
+            String origine = imageRepo.getImage().getUrl();
+            //Le chemin de l'image copié doit être unique
+            File destination =
+                    new File(
+                            STR."\{GitFinderApplication.IMAGES_FOLDER}\\" +
+                                    STR."\{nomRepository}-\{LocalDateTime.now()}.png"
+                    );
+
+            /*
+             * Si l'image n'existe pas déjà, on la copie
+             * Si l'image existe déjà cela veut dire qu'il existe un homonyme et que le repository en cours de création
+             * ne sera pas ajouté à la liste des repositories (cf. Repository.equals et ModelPrincipal.repositories)
+             */
+            Path destinationFinal = null;
+            if (!destination.exists()) {
+                try {
+                    destinationFinal = copierFichier(origine, STR."file:/\{destination.getAbsolutePath()}");
+                } catch (NoSuchFileException e) {
+                    throw e;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            cheminImageInitial = (destinationFinal != null)
+                    ? destinationFinal.toUri().toString()
+                    : destination.getAbsolutePath();
+        }
+        return cheminImageInitial;
     }
 
     /**
@@ -541,28 +594,5 @@ public class FormulaireRepositoryControleur {
         });
     }
 
-    /**
-     * Gère le clic sur le bouton "Quitter"
-     * Retourne à la vue principale
-     */
-    public void handelQuitter(ActionEvent actionEvent) {
-        retourMain();
-    }
 
-    /**
-     * Gère le clic sur le bouton "Enregistrer"
-     * Enregistre les modifications apportées à un repository
-     */
-    public void enregistrer(ActionEvent actionEvent) {
-        if (assureChampsValides()) {
-            Repository repository = model.getRepositoryAModifier();
-            repository.setNom(nomInput.getText());
-            repository.setChemin(cheminInput.getText());
-            repository.setDescription(descriptionInput.getText());
-            if (imageRepoEstModifiee) {
-                repository.setImage(imageRepo.getImage());
-            }
-            retourMain();
-        }
-    }
 }
