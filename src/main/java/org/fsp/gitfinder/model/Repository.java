@@ -1,5 +1,5 @@
 /*
- * Repositorie.java                                  20 mars 2024
+ * Repository.java                                  20 mars 2024
  * IUT de Rodez, pas de droit d'auteur
  */
 
@@ -50,7 +50,7 @@ public class Repository implements Serializable {
      *
      * @param chemin le chemin à vérifier
      */
-    public static void cheminRepositoryValide(String chemin) throws IllegalArgumentException{
+    public static void cheminRepositoryValide(String chemin) throws IllegalArgumentException {
         if (chemin == null) {
             throw new IllegalArgumentException("Le chemin ne peut pas être null");
         }
@@ -81,20 +81,6 @@ public class Repository implements Serializable {
         return cheminImage;
     }
 
-    /**
-     * Retourne l'image du repository.
-     * Si la création de l'image échoue, retourne null.
-     * @return l'image du repository ou null si l'image n'existe pas
-     */
-    public Image getImage() {
-        Image resultat = null;
-        try {
-            resultat = new Image(cheminImage);
-        } catch (Exception _) {}
-
-        return resultat;
-    }
-
     @Override
     public boolean equals(Object autreObject) {
         if (this == autreObject) {
@@ -118,8 +104,7 @@ public class Repository implements Serializable {
 
     @Override
     public String toString() {
-        String s = STR."\{nom} : (\{chemin})";
-        return s;
+        return STR."\{nom} : (\{chemin})\n\{cheminImage}\n";
     }
 
     public void setNom(String nom) {
@@ -141,7 +126,7 @@ public class Repository implements Serializable {
 
     public void setImage(Image image) {
         if (image != null) {
-            this.cheminImage = image.getUrl();
+            this.setCheminImage(image.getUrl());
         }
     }
 
