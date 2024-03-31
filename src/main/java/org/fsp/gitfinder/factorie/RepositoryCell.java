@@ -16,6 +16,7 @@ import org.fsp.gitfinder.GitFinderApplication;
 import org.fsp.gitfinder.model.ModelPrincipal;
 import org.fsp.gitfinder.model.Repository;
 
+import java.io.File;
 import java.io.IOException;
 
 /**
@@ -61,7 +62,10 @@ public class RepositoryCell {
         chemin.setText(repo.getChemin());
         description.setText(repo.getDescription());
         if (repo.getURLImage() != null) {
-            image.setImage(repo.getImage());
+        File imageFile = new File(repo.getURLImage());
+        if (repo.getURLImage() != null && imageFile.exists()) {
+
+            image.setImage(new Image(imageFile.toURI().toString()));
         }
     }
 
