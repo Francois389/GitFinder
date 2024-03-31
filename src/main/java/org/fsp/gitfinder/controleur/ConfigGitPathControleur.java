@@ -3,6 +3,7 @@ package org.fsp.gitfinder.controleur;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.stage.FileChooser;
 import org.fsp.gitfinder.GitFinderApplication;
 import org.fsp.gitfinder.model.ModelPrincipal;
 
@@ -45,6 +46,18 @@ public class ConfigGitPathControleur {
             GitFinderApplication.changerScene("main");
         } else {
             alert.showAndWait();
+        }
+    }
+
+    @FXML
+    protected void onParcourirClick() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Choisir le chemin de git-bash.exe");
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Fichier exécutable", "*.exe"));
+        File file = fileChooser.showOpenDialog(gitPath.getScene().getWindow());
+
+        if (file != null) {
+            gitPath.setText(file.getAbsolutePath());
         }
     }
 
