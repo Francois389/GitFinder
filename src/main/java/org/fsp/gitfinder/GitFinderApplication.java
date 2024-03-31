@@ -36,11 +36,6 @@ public class GitFinderApplication extends Application {
     private static HashMap<String, Scene> scenes;
 
     /**
-     * Les noms des fichiers fxml, sans l'extension.
-     */
-    private static ArrayList<String> ressources;
-
-    /**
      * La fenêtre principale de l'application.
      */
     private static Stage fenetrePrincipale;
@@ -55,13 +50,7 @@ public class GitFinderApplication extends Application {
         fenetrePrincipale.setTitle("GitFinder");
         fenetrePrincipale.setResizable(false);
         fenetrePrincipale.getIcons().add(logoApplication);
-        fenetrePrincipale.setOnCloseRequest(event -> {
-            try {
-                quit();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        });
+        fenetrePrincipale.setOnCloseRequest(event -> quit());
 
         fenetrePrincipale.show();
     }
@@ -88,7 +77,10 @@ public class GitFinderApplication extends Application {
      */
     private void chargementApplication() {
         scenes = new HashMap<>();
-        ressources = new ArrayList<String>();
+        /*
+          Les noms des fichiers fxml, sans l'extension.
+         */
+        ArrayList<String> ressources = new ArrayList<>();
 
         ressources.add("configGitPath");
         ressources.add("main");
@@ -159,10 +151,9 @@ public class GitFinderApplication extends Application {
     /**
      * Fonction appelé par les controllers pour quitter l'application
      *
-     * @throws IOException   si une erreur survient lors de la sauvegarde
      * @throws InternalError si une erreur survient lors de la sauvegarde
      */
-    public static void quit() throws InternalError, IOException {
+    public static void quit() throws InternalError {
         System.out.println("Quitting application");
         GestionSauvegarde.sauvegarde();
         Platform.exit();

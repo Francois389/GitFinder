@@ -47,8 +47,8 @@ public class GestionSauvegarde {
      * Si les données n'existent pas, renvoie false
      */
     public static boolean charge() throws IOException {
-        String gitPath = "";
-        HashSet<Repository> repositories = new HashSet<>();
+        String gitPath;
+        HashSet<Repository> repositories;
         boolean success = false;
 
         File fichierSauvegarde = new File(FICHIER_SAUVEGARDE);
@@ -76,8 +76,6 @@ public class GestionSauvegarde {
                 success = true;
             } catch (EOFException e) {
                 System.out.println("Le fichier est vide");
-            } catch (IOException i) {
-                i.printStackTrace();
             } catch (ClassNotFoundException c) {
                 c.printStackTrace();
             }

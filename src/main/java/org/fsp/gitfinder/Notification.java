@@ -35,7 +35,6 @@ public class Notification {
 
     private final Stage notificationStage; // La fenêtre de notification
     private final Label notificationLabel; // Le label contenant le message de la notification
-    private Timeline timelineFadeAway;
 
     public Notification(String message) {
         this.message = message;
@@ -90,7 +89,8 @@ public class Notification {
         fenetrePrincipale.requestFocus();
 
         // Définition de la durée d'affichage de la notification avant de la fermer
-        timelineFadeAway = new Timeline(
+        // Réduction de l'opacité jusqu'à 0
+        Timeline timelineFadeAway = new Timeline(
                 new KeyFrame(Duration.seconds(dureeApparition),
                         new KeyValue(notificationStage.opacityProperty(), 0)) // Réduction de l'opacité jusqu'à 0
         );
