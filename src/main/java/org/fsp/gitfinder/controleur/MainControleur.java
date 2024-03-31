@@ -10,8 +10,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.Callback;
-import org.fsp.gitfinder.Notification;
 import org.fsp.gitfinder.GitBashLauncher;
 import org.fsp.gitfinder.GitFinderApplication;
 import org.fsp.gitfinder.factorie.RepositoryListViewCellFactorie;
@@ -43,16 +41,9 @@ public class MainControleur {
         repositorieObservableList.setAll(model.getRepositories());
 
         listeRepos.setItems(repositorieObservableList);
-        listeRepos.setCellFactory(new Callback<ListView<Repository>, ListCell<Repository>>() {
-            @Override
-            public ListCell<Repository> call(ListView<Repository> repositoryListView) {
-                return new RepositoryListViewCellFactorie();
-            }
-        });
+        listeRepos.setCellFactory(repositoryListView -> new RepositoryListViewCellFactorie());
 
-        listeRepos.setOnMouseClicked(event -> {
-            handleRepoClick(listeRepos.getSelectionModel().getSelectedItem());
-        });
+        listeRepos.setOnMouseClicked(event -> handleRepoClick(listeRepos.getSelectionModel().getSelectedItem()));
 
         listeRepos.setOnKeyPressed(event -> {
             if (   event.getCode().getName().equals("Enter")
