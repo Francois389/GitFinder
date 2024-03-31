@@ -198,6 +198,7 @@ public class FormulaireRepositoryControleur {
                 imageView.setFitWidth(1000);
             }
             imageView.setPreserveRatio(true);
+            imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> affichage.close());
             affichage.getDialogPane().setContent(imageView);
             affichage.showAndWait();
         }
