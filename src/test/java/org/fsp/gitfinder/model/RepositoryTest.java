@@ -26,6 +26,8 @@ class RepositoryTest {
         //When, on crée un Repository avec ce chemin
         //Then une exception est levée
         assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nom, "", ""));
+        assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nom, ""));
+        assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nom));
     }
 
     @Test
@@ -40,7 +42,12 @@ class RepositoryTest {
         //When, on crée un Repository avec ce nom
         //Then une exception est levée
         assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nomVide, "", ""));
+        assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nomVide, ""));
+        assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nomVide));
+
         assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nomNull, "", ""));
+        assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nomNull, ""));
+        assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nomNull));
     }
 
     @Test
@@ -53,6 +60,8 @@ class RepositoryTest {
         //When, on crée un Repository avec ce chemin
         //Then une exception est levée
         assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nom, "", ""));
+        assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nom, ""));
+        assertThrows(IllegalArgumentException.class, () -> new Repository(chemin, nom));
     }
 
     @Test
@@ -65,6 +74,8 @@ class RepositoryTest {
         //When, on crée un Repository avec ces paramètres
         //Then le Repository est créé, sans exception
         assertDoesNotThrow(() -> new Repository(chemin, nom, "", ""));
+        assertDoesNotThrow(() -> new Repository(chemin, nom, ""));
+        assertDoesNotThrow(() -> new Repository(chemin, nom));
     }
 
 
@@ -72,7 +83,7 @@ class RepositoryTest {
     @DisplayName("Les deux Repository ont le même nom et le même chemin")
     void testEqualsMemeAttribut() {
         //Given un Repository avec les mêmes attributs
-        Repository repository2 = new Repository(repository.getChemin(), repository.getNom(), "", "");
+        Repository repository2 = new Repository(repository.getChemin(), repository.getNom(), repository.getDescription(), repository.getURLImage());
 
         //When, on compare les deux Repository
         //Then les deux Repository sont égaux
@@ -92,10 +103,11 @@ class RepositoryTest {
     @DisplayName("Deux Repository qui ont des descriptions différentes sont identiques")
     void testEqualsDescriptionDifferentes() {
         //Given un Repository avec une description
-        Repository repository2 = new Repository(repository.getChemin(), repository.getNom(), "Description", "");
+        Repository repository2 = new Repository(repository.getChemin(), repository.getNom(), "Description");
 
         //When, on compare les deux Repository
         //Then les deux Repository sont égaux
+        assertNotEquals(repository.getDescription(), repository2.getDescription());
         assertEquals(repository, repository2);
     }
 
@@ -107,6 +119,7 @@ class RepositoryTest {
 
         //When, on compare les deux Repository
         //Then les deux Repository sont égaux
+        assertNotEquals(repository.getURLImage(), repository2.getURLImage());
         assertEquals(repository, repository2);
     }
 }

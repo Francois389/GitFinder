@@ -501,7 +501,7 @@ public class FormulaireRepositoryControleur {
             //Le chemin de l'image copié doit être unique
             String nomImageUnique =
                     STR."\{nomRepository}-\{LocalDateTime.now().format(dateFormatage)}.png";
-            
+
             File destination =
                     new File(
                     STR."\{GitFinderApplication.IMAGES_FOLDER}\\" +
