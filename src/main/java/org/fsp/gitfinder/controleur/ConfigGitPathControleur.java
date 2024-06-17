@@ -15,7 +15,7 @@ public class ConfigGitPathControleur {
 
     private ModelPrincipal modelPrincipal;
 
-    private final static Alert alert = new Alert(Alert.AlertType.ERROR, "Le chemin n'existe pas");
+    private static final Alert alert = new Alert(Alert.AlertType.ERROR, "Le chemin n'existe pas");
 
     @FXML
     void initialize() {
