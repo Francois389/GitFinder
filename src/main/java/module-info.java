@@ -1,6 +1,7 @@
 module org.fsp.gitfinder {
     requires javafx.controls;
     requires javafx.fxml;
+    requires java.logging;
 
 
     opens org.fsp.gitfinder to javafx.fxml;
