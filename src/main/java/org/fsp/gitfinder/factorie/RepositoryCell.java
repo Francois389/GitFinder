@@ -10,11 +10,9 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import org.fsp.gitfinder.GitFinderApplication;
-import org.fsp.gitfinder.model.ModelPrincipal;
 import org.fsp.gitfinder.model.Repository;
 
 import java.io.File;
@@ -62,12 +60,14 @@ public class RepositoryCell {
         nomRepo.setText(repo.getNom());
         chemin.setText(repo.getChemin());
         description.setText(repo.getDescription());
-
-        File imageFile = new File(repo.getURLImage());
-        if (repo.getURLImage() != null && imageFile.exists()) {
-
-            image.setImage(new Image(imageFile.toURI().toString()));
+        
+        if (repo.getURLImage() != null) {
+            File imageFile = new File(repo.getURLImage());
+            if (imageFile.exists()) {
+                image.setImage(new Image(imageFile.toURI().toString()));
+            }
         }
+
     }
 
     /**
