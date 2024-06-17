@@ -6,6 +6,7 @@
 package org.fsp.gitfinder.model;
 
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author François de Saint Palais
@@ -16,7 +17,7 @@ public class ModelPrincipal {
 
     private String gitBashPath;
 
-    private HashSet<Repository> repositories;
+    private Set<Repository> repositories;
 
     private Repository repositorySelectionner;
 
@@ -41,11 +42,11 @@ public class ModelPrincipal {
         this.gitBashPath = gitBashPath;
     }
 
-    public HashSet<Repository> getRepositories() {
+    public Set<Repository> getRepositories() {
         return repositories;
     }
 
-    public void setRepositories(HashSet<Repository> repositories) {
+    public void setRepositories(Set<Repository> repositories) {
         this.repositories = repositories;
     }
 

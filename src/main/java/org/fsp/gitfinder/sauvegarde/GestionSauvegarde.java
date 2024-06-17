@@ -10,6 +10,7 @@ import org.fsp.gitfinder.model.Repository;
 
 import java.io.*;
 import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Gére la sauvegarde des données de l'application.
@@ -27,7 +28,7 @@ public class GestionSauvegarde {
      */
     public static void sauvegarde() {
         String gitPath = model.getGitBashPath();
-        HashSet<Repository> repositories = model.getRepositories();
+        Set<Repository> repositories = model.getRepositories();
 
         // Sauvegarde des données
         try {
