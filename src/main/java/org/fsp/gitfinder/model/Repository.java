@@ -108,7 +108,7 @@ public class Repository implements Serializable {
 
     @Override
     public String toString() {
-        return STR."\{nom} : (\{chemin})\n\{cheminImage}\n";
+        return nom + " : (" + chemin + ")\n" + cheminImage + "\n";
     }
 
     public void setNom(String nom) {

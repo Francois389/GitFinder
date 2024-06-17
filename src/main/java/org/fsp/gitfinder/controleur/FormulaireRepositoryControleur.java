@@ -355,7 +355,7 @@ public class FormulaireRepositoryControleur {
         }
 
         //On met à jour la description du repository si celle-ci est vide
-        String cheminReadme = STR."\{dossierSelectionner.getAbsolutePath()}\\README.md";
+        String cheminReadme = dossierSelectionner.getAbsolutePath() + "\\README.md";
         File readme = new File(cheminReadme);
         if (readme.exists()) {
             String descriptionRecupere = getDescriptionDepuisREADME(readme);
@@ -388,7 +388,7 @@ public class FormulaireRepositoryControleur {
             for (String ligne : lines.toList()) {
                 if (onAAtteintLaDescription) {
                     if (!ligne.isEmpty()) {
-                        description.append(STR."\{ligne}\n");
+                        description.append(ligne).append("\n");
                         // On s'arrête quand on a atteint une autre section
                         onAAtteintLaDescription = ligne.matches("^## ");
                     }
@@ -414,7 +414,7 @@ public class FormulaireRepositoryControleur {
     private static boolean estBaliseDescription(String ligne) {
         boolean estDescription = false;
         for (int i = 0; i < motsCleDescription.size() && !estDescription; i++) {
-            estDescription = ligne.contains(STR."## \{motsCleDescription.get(i)}");
+            estDescription = ligne.contains("## " + motsCleDescription.get(i));
         }
         return estDescription;
     }
@@ -499,14 +499,10 @@ public class FormulaireRepositoryControleur {
 
             String origine = imageRepo.getImage().getUrl();
             //Le chemin de l'image copié doit être unique
-            String nomImageUnique =
-                    STR."\{nomRepository}-\{LocalDateTime.now().format(dateFormatage)}.png";
+            String nomImageUnique = nomRepository + LocalDateTime.now().format(dateFormatage) + ".png";
 
             File destination =
-                    new File(
-                    STR."\{GitFinderApplication.IMAGES_FOLDER}\\" +
-                            nomImageUnique
-                    );
+                    new File(GitFinderApplication.IMAGES_FOLDER + "\\" + nomImageUnique);
 
             /*
              * Si l'image n'existe pas déjà, on la copie
@@ -516,7 +512,7 @@ public class FormulaireRepositoryControleur {
             Path destinationFinal = null;
             if (!destination.exists()) {
                 try {
-                    destinationFinal = copierFichier(origine, STR."file:/\{destination.getAbsolutePath()}");
+                    destinationFinal = copierFichier(origine, "file:/" + destination.getAbsolutePath());
                 } catch (NoSuchFileException e) {
                     throw e;
                 } catch (IOException e) {

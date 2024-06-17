@@ -64,7 +64,7 @@ public class GestionSauvegarde {
                 repositories = (HashSet<Repository>) in.readObject();
                 gitPath = (String) in.readObject();
 
-                System.out.println(STR."Git path : \{gitPath}");
+                System.out.println("Git path : " + gitPath);
                 System.out.println("Repositories : ");
                 for (Repository r : repositories) {
                     System.out.println(r);

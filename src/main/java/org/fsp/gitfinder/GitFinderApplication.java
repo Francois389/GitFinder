@@ -23,6 +23,7 @@ import java.util.Objects;
 /**
  * Initialise les ressources de l'application charge la sauvegarde et affiche la fenêtre principale.
  * Lorsque l'application est fermée, effectuée la sauvegarde.
+ *
  * @author François de Saint Palais
  */
 public class GitFinderApplication extends Application {
@@ -109,7 +110,7 @@ public class GitFinderApplication extends Application {
      */
     public static void changerScene(String nomFichier) {
         if (!scenes.containsKey(nomFichier)) {
-            throw new IllegalArgumentException(STR."La scène \{nomFichier} n'a pas été chargée");
+            throw new IllegalArgumentException("La scène " + nomFichier + " n'a pas été chargée");
         }
         fenetrePrincipale.setScene(scenes.get(nomFichier));
     }
@@ -120,7 +121,7 @@ public class GitFinderApplication extends Application {
      * @param nomFichier le nom du fichier fxml, sans l'extension
      */
     private static void loadScene(String nomFichier) {
-        String nomFichierExtension = STR."\{nomFichier}.fxml";
+        String nomFichierExtension = nomFichier + ".fxml";
 
         // Si le chemin du fichier contient l'extension, on lève une exception
         if (nomFichier.substring(nomFichier.length() - 4).equals(".fxml")) {
@@ -132,18 +133,18 @@ public class GitFinderApplication extends Application {
         try {
             Scene scene = new Scene(loader.load());
             scenes.put(nomFichier, scene);
-            System.out.println(STR."Chargement de la scène \{loader.getLocation()}");
+            System.out.println("Chargement de la scène " + loader.getLocation());
 
         } catch (IllegalStateException e) {
-            System.out.println(STR."Nom de fichier ou chemin incorrect : \{nomFichierExtension}");
+            System.out.println("Nom de fichier ou chemin incorrect : " + nomFichierExtension);
         } catch (LoadException e) {
-            System.out.println(STR."Erreur dans le fichier fxml ou la méthode \"initialize\" du controleur : \{loader.getLocation()}");
+            System.out.println("Erreur dans le fichier fxml ou la méthode \"initialize\" du controleur : " + loader.getLocation());
             e.printStackTrace();
         } catch (IOException e) {
-            System.out.println(STR."Impossible de charger la scène \{loader.getLocation()}");
+            System.out.println("Impossible de charger la scène " + loader.getLocation());
             e.printStackTrace();
         } catch (Exception e) {
-            System.out.println(STR."Erreur inconnue lors du chargement de la scène \{loader.getLocation()}");
+            System.out.println("Erreur inconnue lors du chargement de la scène " + loader.getLocation());
             e.printStackTrace();
         }
     }
@@ -162,6 +163,7 @@ public class GitFinderApplication extends Application {
     public static void main(String[] args) {
         if (!IMAGES_FOLDER.exists()) {
             IMAGES_FOLDER.mkdir();
+            //TODO handle if `mkdir` return false
         }
         launch(args);
     }
