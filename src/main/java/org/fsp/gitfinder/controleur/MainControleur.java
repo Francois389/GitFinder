@@ -64,7 +64,7 @@ public class MainControleur {
                 GitBashLauncher.launch();
             } else {
                 model.setRepositoryAModifier(repositoryClique);
-                GitFinderApplication.loadEtChangerScene("formulaireRepository");
+                GitFinderApplication.loadEtChangerScene(GitFinderApplication.ViewPath.FORMULAIRE_REPOSITORY);
             }
         }
     }
@@ -78,6 +78,6 @@ public class MainControleur {
     }
 
     public void onAjouterClick() {
-        GitFinderApplication.loadEtChangerScene("formulaireRepository");
+        GitFinderApplication.loadEtChangerScene(GitFinderApplication.ViewPath.FORMULAIRE_REPOSITORY);
     }
 }

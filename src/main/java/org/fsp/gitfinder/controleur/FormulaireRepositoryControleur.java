@@ -592,7 +592,7 @@ public class FormulaireRepositoryControleur {
 
         alert.showAndWait().ifPresent(type -> {
             if (type == oui) {
-                GitFinderApplication.loadEtChangerScene("main");
+                GitFinderApplication.loadEtChangerScene(GitFinderApplication.ViewPath.MAIN);
             }
         });
     }

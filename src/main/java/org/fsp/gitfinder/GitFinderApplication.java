@@ -17,6 +17,7 @@ import org.fsp.gitfinder.sauvegarde.GestionSauvegarde;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Objects;
 
@@ -34,7 +35,7 @@ public class GitFinderApplication extends Application {
     /**
      * Le nom des fichiers fxml, sans l'extension, associés à leur Scene.
      */
-    private static HashMap<String, Scene> scenes;
+    private static EnumMap<ViewPath, Scene> scenes;
 
     /**
      * La fenêtre principale de l'application.
@@ -64,10 +65,10 @@ public class GitFinderApplication extends Application {
         // Si les données n'ont pas pu être chargées, on affiche la scène de configuration du chemin de GitBash
         if (!resultat) {
             System.out.println("Impossible de charger les données");
-            changerScene("configGitPath");
+            changerScene(ViewPath.CONFIG_GIT_PATH);
         } else {
             System.out.println("Données chargées");
-            loadEtChangerScene("main");
+            loadEtChangerScene(ViewPath.MAIN);
         }
     }
 
@@ -77,20 +78,11 @@ public class GitFinderApplication extends Application {
      * Les ressources ne doivent dépendre de valeur initialisée par d'autre ressource.
      */
     private void chargementApplication() {
-        scenes = new HashMap<>();
-        /*
-          Les noms des fichiers fxml, sans l'extension.
-         */
-        ArrayList<String> ressources = new ArrayList<>();
+        scenes = new EnumMap<>(ViewPath.class);
 
-        ressources.add("configGitPath");
-        ressources.add("main");
-        ressources.add("formulaireRepository");
-
-        for (String ressource : ressources) {
+        for (ViewPath ressource : ViewPath.values()) {
             loadScene(ressource);
         }
-
     }
 
     /**
@@ -98,7 +90,7 @@ public class GitFinderApplication extends Application {
      *
      * @param nomFichier le nom du fichier fxml, sans l'extension
      */
-    public static void loadEtChangerScene(String nomFichier) {
+    public static void loadEtChangerScene(ViewPath nomFichier) {
         loadScene(nomFichier);
         changerScene(nomFichier);
     }
@@ -108,7 +100,7 @@ public class GitFinderApplication extends Application {
      *
      * @param nomFichier le nom du fichier fxml, sans l'extension
      */
-    public static void changerScene(String nomFichier) {
+    public static void changerScene(ViewPath nomFichier) {
         if (!scenes.containsKey(nomFichier)) {
             throw new IllegalArgumentException("La scène " + nomFichier + " n'a pas été chargée");
         }
@@ -120,11 +112,11 @@ public class GitFinderApplication extends Application {
      *
      * @param nomFichier le nom du fichier fxml, sans l'extension
      */
-    private static void loadScene(String nomFichier) {
-        String nomFichierExtension = nomFichier + ".fxml";
+    private static void loadScene(ViewPath nomFichier) {
+        String nomFichierExtension = nomFichier.getPath() + ".fxml";
 
         // Si le chemin du fichier contient l'extension, on lève une exception
-        if (nomFichier.substring(nomFichier.length() - 4).equals(".fxml")) {
+        if (nomFichier.getPath().substring(nomFichier.getPath().length() - 4).equals(".fxml")) {
             throw new IllegalArgumentException("Le nom de fichier ne doit pas contenir l'extension");
         }
 
@@ -170,5 +162,21 @@ public class GitFinderApplication extends Application {
 
     public static Stage getFenetrePrincipale() {
         return fenetrePrincipale;
+    }
+
+    public enum ViewPath {
+        CONFIG_GIT_PATH("configGitPath"),
+        MAIN("main"),
+        FORMULAIRE_REPOSITORY("formulaireRepository");
+
+        private final String path;
+
+        ViewPath(String fileViewPath) {
+            this.path = fileViewPath;
+        }
+
+        public String getPath() {
+            return this.path;
+        }
     }
 }

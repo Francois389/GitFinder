@@ -29,7 +29,7 @@ public class ConfigGitPathControleur {
         }
 
         if (modelPrincipal.getGitBashPath() != null) {
-            GitFinderApplication.changerScene("main");
+            GitFinderApplication.changerScene(GitFinderApplication.ViewPath.MAIN);
         }
     }
 
@@ -43,7 +43,7 @@ public class ConfigGitPathControleur {
 
         if (file.exists()) {
             modelPrincipal.setGitBashPath(path);
-            GitFinderApplication.changerScene("main");
+            GitFinderApplication.changerScene(GitFinderApplication.ViewPath.MAIN);
         } else {
             alert.showAndWait();
         }
