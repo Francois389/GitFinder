@@ -14,9 +14,8 @@ class ModelPrincipalTest {
 
     @BeforeEach
     public void setUp() {
-        ModelPrincipal model = ModelPrincipal.getInstance();
+        model = ModelPrincipal.getInstance();
         model.setRepositories(new HashSet<>());
-        this.model = model;
     }
 
     @Test

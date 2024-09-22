@@ -31,16 +31,16 @@ public class GestionSauvegarde {
         Set<Repository> repositories = model.getRepositories();
 
         // Sauvegarde des données
-        try {
-            FileOutputStream fileOut = new FileOutputStream(FICHIER_SAUVEGARDE);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
-
+        try (
+                FileOutputStream fileOut = new FileOutputStream(FICHIER_SAUVEGARDE);
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
+        ) {
             out.writeObject(repositories);
             out.writeObject(gitPath);
         } catch (IOException i) {
             i.printStackTrace();
         }
-        System.out.println("Sauvegarde effectuée");
+        System.out.println("Sauvegarde sérialisable effectuée");
     }
 
     /**
@@ -58,10 +58,10 @@ public class GestionSauvegarde {
             fichierSauvegarde.createNewFile();
         } else {
             // Chargement des données
-            try {
+            try (
                 FileInputStream fileIn = new FileInputStream(FICHIER_SAUVEGARDE);
                 ObjectInputStream in = new ObjectInputStream(fileIn);
-
+            ) {
                 repositories = (HashSet<Repository>) in.readObject();
                 gitPath = (String) in.readObject();
 
