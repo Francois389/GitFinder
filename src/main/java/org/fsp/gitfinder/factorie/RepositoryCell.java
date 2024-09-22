@@ -60,7 +60,7 @@ public class RepositoryCell {
         nomRepo.setText(repo.getNom());
         chemin.setText(repo.getChemin());
         description.setText(repo.getDescription());
-        
+
         if (repo.getURLImage() != null) {
             File imageFile = new File(repo.getURLImage());
             if (imageFile.exists()) {
