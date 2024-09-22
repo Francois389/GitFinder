@@ -13,6 +13,7 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.fsp.gitfinder.sauvegarde.GestionSauvegarde;
+import org.fsp.gitfinder.service.RepositoryService;
 
 import java.io.File;
 import java.io.IOException;
@@ -70,6 +71,7 @@ public class GitFinderApplication extends Application {
             System.out.println("Données chargées");
             loadEtChangerScene(ViewPath.MAIN);
         }
+        RepositoryService.sauvegarder();
     }
 
     /**
@@ -148,6 +150,7 @@ public class GitFinderApplication extends Application {
      */
     public static void quit() throws InternalError {
         System.out.println("Quitting application");
+        RepositoryService.sauvegarder();
         GestionSauvegarde.sauvegarde();
         Platform.exit();
     }
