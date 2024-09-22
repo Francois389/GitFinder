@@ -17,10 +17,9 @@ import org.fsp.gitfinder.service.RepositoryService;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.EnumMap;
-import java.util.HashMap;
 import java.util.Objects;
+import java.util.logging.Logger;
 
 /**
  * Initialise les ressources de l'application charge la sauvegarde et affiche la fenêtre principale.
@@ -42,6 +41,8 @@ public class GitFinderApplication extends Application {
      * La fenêtre principale de l'application.
      */
     private static Stage fenetrePrincipale;
+
+    public static final Logger LOGGER = Logger.getLogger(GitFinderApplication.class.getName());
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -65,10 +66,10 @@ public class GitFinderApplication extends Application {
         boolean resultat = GestionSauvegarde.charge();
         // Si les données n'ont pas pu être chargées, on affiche la scène de configuration du chemin de GitBash
         if (!resultat) {
-            System.out.println("Impossible de charger les données");
+            LOGGER.warning("Impossible de charger les données");
             changerScene(ViewPath.CONFIG_GIT_PATH);
         } else {
-            System.out.println("Données chargées");
+            LOGGER.info("Données chargées");
             loadEtChangerScene(ViewPath.MAIN);
         }
         RepositoryService.sauvegarder();
@@ -127,18 +128,18 @@ public class GitFinderApplication extends Application {
         try {
             Scene scene = new Scene(loader.load());
             scenes.put(nomFichier, scene);
-            System.out.println("Chargement de la scène " + loader.getLocation());
+            LOGGER.info("Chargement de la scène " + loader.getLocation());
 
         } catch (IllegalStateException e) {
-            System.out.println("Nom de fichier ou chemin incorrect : " + nomFichierExtension);
+            LOGGER.warning("Nom de fichier ou chemin incorrect : " + nomFichierExtension);
         } catch (LoadException e) {
-            System.out.println("Erreur dans le fichier fxml ou la méthode \"initialize\" du controleur : " + loader.getLocation());
+            LOGGER.warning("Erreur dans le fichier fxml ou la méthode \"initialize\" du controleur : " + loader.getLocation());
             e.printStackTrace();
         } catch (IOException e) {
-            System.out.println("Impossible de charger la scène " + loader.getLocation());
+            LOGGER.warning("Impossible de charger la scène " + loader.getLocation());
             e.printStackTrace();
         } catch (Exception e) {
-            System.out.println("Erreur inconnue lors du chargement de la scène " + loader.getLocation());
+            LOGGER.warning("Erreur inconnue lors du chargement de la scène " + loader.getLocation());
             e.printStackTrace();
         }
     }
@@ -149,7 +150,7 @@ public class GitFinderApplication extends Application {
      * @throws InternalError si une erreur survient lors de la sauvegarde
      */
     public static void quit() throws InternalError {
-        System.out.println("Quitting application");
+        LOGGER.info("Quitting application");
         RepositoryService.sauvegarder();
         GestionSauvegarde.sauvegarde();
         Platform.exit();

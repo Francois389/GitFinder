@@ -11,6 +11,7 @@ import org.fsp.gitfinder.model.Repository;
 import java.io.*;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * Gére la sauvegarde des données de l'application.
@@ -22,6 +23,8 @@ public class GestionSauvegarde {
     private static final String FICHIER_SAUVEGARDE = "data.ser";
 
     private static final ModelPrincipal model = ModelPrincipal.getInstance();
+
+    public static final Logger LOGGER = Logger.getLogger(GestionSauvegarde.class.getName());
 
     /**
      * Sauvegarde les données du ModelPrincipal.
@@ -40,7 +43,7 @@ public class GestionSauvegarde {
         } catch (IOException i) {
             i.printStackTrace();
         }
-        System.out.println("Sauvegarde sérialisable effectuée");
+        LOGGER.info("Sauvegarde sérialisable effectuée");
     }
 
     /**
@@ -59,16 +62,16 @@ public class GestionSauvegarde {
         } else {
             // Chargement des données
             try (
-                FileInputStream fileIn = new FileInputStream(FICHIER_SAUVEGARDE);
-                ObjectInputStream in = new ObjectInputStream(fileIn);
+                    FileInputStream fileIn = new FileInputStream(FICHIER_SAUVEGARDE);
+                    ObjectInputStream in = new ObjectInputStream(fileIn);
             ) {
                 repositories = (HashSet<Repository>) in.readObject();
                 gitPath = (String) in.readObject();
 
-                System.out.println("Git path : " + gitPath);
-                System.out.println("Repositories : ");
+                LOGGER.info("Git path : " + gitPath);
+                LOGGER.info("Repositories : ");
                 for (Repository r : repositories) {
-                    System.out.println(r);
+                    LOGGER.info(r.toString());
                 }
 
                 model.setRepositories(repositories);
@@ -76,7 +79,7 @@ public class GestionSauvegarde {
 
                 success = true;
             } catch (EOFException e) {
-                System.out.println("Le fichier est vide");
+                LOGGER.warning("Le fichier est vide");
             } catch (ClassNotFoundException c) {
                 c.printStackTrace();
             }

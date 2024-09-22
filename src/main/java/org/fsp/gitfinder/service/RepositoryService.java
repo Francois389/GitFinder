@@ -14,6 +14,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.Set;
+import java.util.logging.Logger;
 
 /**
  * @author François de Saint Palais
@@ -24,6 +25,8 @@ public class RepositoryService {
     public static final String GIT_PATH_KEY = "gitPath";
     public static final String REPOSITORIES_KEY = "repositories";
     public static final String JSON_SAVE = "save.json";
+
+    public static final Logger LOGGER = Logger.getLogger(RepositoryService.class.getName());
 
     public static void sauvegarder() {
         JSONObject json = new JSONObject();
@@ -43,16 +46,16 @@ public class RepositoryService {
 
     public static void sauvegarderInFile(JSONObject jsonObject, String fileSaveName) {
         try (
-            FileOutputStream fileOut = new FileOutputStream(fileSaveName);
-            ObjectOutputStream out = new ObjectOutputStream(fileOut);
+                FileOutputStream fileOut = new FileOutputStream(fileSaveName);
+                ObjectOutputStream out = new ObjectOutputStream(fileOut);
         ) {
-            System.out.printf(jsonObject.toString());
+            LOGGER.info(jsonObject.toString());
 
             out.writeObject(jsonObject.toString());
         } catch (IOException i) {
             i.printStackTrace();
         }
 
-        System.out.println("Sauvegarde effectuée");
+        LOGGER.info("Sauvegarde effectuée");
     }
 }

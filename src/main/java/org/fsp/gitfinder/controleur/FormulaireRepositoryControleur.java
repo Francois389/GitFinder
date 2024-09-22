@@ -13,7 +13,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
-
 import org.fsp.gitfinder.GitFinderApplication;
 import org.fsp.gitfinder.Notification;
 import org.fsp.gitfinder.model.ModelPrincipal;
@@ -23,12 +22,16 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.*;
+import java.nio.file.Files;
+import java.nio.file.NoSuchFileException;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Logger;
 import java.util.stream.Stream;
 
 /**
@@ -104,6 +107,8 @@ public class FormulaireRepositoryControleur {
      */
     private boolean imageRepoEstModifiee = false;
 
+    public static final Logger LOGGER = Logger.getLogger(FormulaireRepositoryControleur.class.getName());
+
     @FXML
     void initialize() {
         // On charge l'image de status
@@ -112,7 +117,7 @@ public class FormulaireRepositoryControleur {
         } catch (NullPointerException e) {
             //Si l'image n'a pas pu être chargée, on n'affiche pas le status
             statusChemin.setVisible(false);
-            System.err.println("Impossible de charger les images de status");
+            LOGGER.warning("Impossible de charger les images de status");
         }
 
         // On charge l'image de placeholder
@@ -125,7 +130,7 @@ public class FormulaireRepositoryControleur {
                 """
                         Un chemin de repository est un chemin vers un dossier contenant un dossier .git.
                         Ce dossier .git est un dossier caché qui contient les informations de git.
-                                                
+                        
                         Par exemple, si vous avez un repository dans le dossier D:\\monrepo, alors le dossier D:\\monrepo\\.git doit exister.""");
 
         // On cache l'erreur de chemin invalide
@@ -186,8 +191,6 @@ public class FormulaireRepositoryControleur {
         fileChooser.getExtensionFilters().add(EXTENSION_IMAGE_AUTORISE);
 
         File image = fileChooser.showOpenDialog(null);
-
-        System.out.println(image);
 
         if (image != null) {
             //On enregistre le dossier parent pour ne pas avoir à parcourir l'arborescence à chaque fois
@@ -364,8 +367,8 @@ public class FormulaireRepositoryControleur {
                 descriptionInput.setText(descriptionRecupere);
             }
 
-            System.out.println("Contenu du README :");
-            System.out.println(descriptionRecupere);
+            LOGGER.info("Contenu du README :");
+            LOGGER.info(descriptionRecupere);
         }
     }
 
@@ -461,10 +464,10 @@ public class FormulaireRepositoryControleur {
 
             // On ajoute le repository à la liste des repositories enregistrés
             try {
-                System.out.println(chemin);
-                System.out.println(nom);
-                System.out.println(description);
-                System.out.println(image);
+                LOGGER.info(chemin);
+                LOGGER.info(nom);
+                LOGGER.info(description);
+                LOGGER.info(image);
                 Repository repository = new Repository(chemin, nom, description, image);
                 model.ajouterRepository(repository);
                 estAjouter = true;
@@ -596,6 +599,4 @@ public class FormulaireRepositoryControleur {
             }
         });
     }
-
-
 }

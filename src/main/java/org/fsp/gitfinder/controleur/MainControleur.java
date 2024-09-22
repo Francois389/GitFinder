@@ -8,13 +8,16 @@ package org.fsp.gitfinder.controleur;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ListView;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.AnchorPane;
 import org.fsp.gitfinder.GitBashLauncher;
 import org.fsp.gitfinder.GitFinderApplication;
 import org.fsp.gitfinder.factorie.RepositoryListViewCellFactorie;
 import org.fsp.gitfinder.model.ModelPrincipal;
 import org.fsp.gitfinder.model.Repository;
+
+import java.util.logging.Logger;
 
 /**
  * @author François de Saint Palais
@@ -33,10 +36,12 @@ public class MainControleur {
 
     private static final ModelPrincipal model = ModelPrincipal.getInstance();
 
+    public static final Logger LOGGER = Logger.getLogger(MainControleur.class.getName());
+
     @FXML
     void initialize() {
 
-        System.out.println(model.getRepositories());
+        LOGGER.info(model.getRepositories().toString());
 
         repositorieObservableList.setAll(model.getRepositories());
 
@@ -46,8 +51,8 @@ public class MainControleur {
         listeRepos.setOnMouseClicked(event -> handleRepoClick(listeRepos.getSelectionModel().getSelectedItem()));
 
         listeRepos.setOnKeyPressed(event -> {
-            if (   event.getCode().getName().equals("Enter")
-                || event.getCode().getName().equals("Space")) {
+            if (event.getCode().getName().equals("Enter")
+                    || event.getCode().getName().equals("Space")) {
                 handleRepoClick(listeRepos.getSelectionModel().getSelectedItem());
             }
         });
@@ -57,7 +62,7 @@ public class MainControleur {
         model.setRepositoryAModifier(null);
 
         if (repositoryClique != null) {
-            System.out.println(repositoryClique);
+            LOGGER.info(repositoryClique.toString());
 
             if (!modifierButton.isSelected()) {
                 model.setRepositorySelectionner(repositoryClique);
@@ -70,7 +75,7 @@ public class MainControleur {
     }
 
     public void onModifierClick() {
-        System.out.println(modifierButton.isSelected());
+        LOGGER.info(String.valueOf(modifierButton.isSelected()));
         //Désélectionne l'item sélectionné dans la liste
         //Si un element est déjà sélectionné, alors l'application empêche
         // de cliquer sur l'élément

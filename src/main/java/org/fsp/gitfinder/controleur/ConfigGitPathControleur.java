@@ -8,6 +8,7 @@ import org.fsp.gitfinder.GitFinderApplication;
 import org.fsp.gitfinder.model.ModelPrincipal;
 
 import java.io.File;
+import java.util.logging.Logger;
 
 public class ConfigGitPathControleur {
     @FXML
@@ -16,6 +17,8 @@ public class ConfigGitPathControleur {
     private ModelPrincipal modelPrincipal;
 
     private static final Alert alert = new Alert(Alert.AlertType.ERROR, "Le chemin n'existe pas");
+
+    public static final Logger LOGGER = Logger.getLogger(ConfigGitPathControleur.class.getName());
 
     @FXML
     void initialize() {
@@ -64,6 +67,7 @@ public class ConfigGitPathControleur {
     /**
      * Nettoie le chemin en supprimant les caractères inutiles.
      * Par exemple : "C:\Program Files\Git\git-bash.exe" -> C:\Program Files\Git\git-bash.exe
+     *
      * @param path le chemin à nettoyer
      * @return le chemin nettoyé
      */
