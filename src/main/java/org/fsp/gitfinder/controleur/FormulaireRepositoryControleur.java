@@ -31,6 +31,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
@@ -473,8 +474,13 @@ public class FormulaireRepositoryControleur {
                 LOGGER.info(nom);
                 LOGGER.info(description);
                 LOGGER.info(image);
-                Repository repository = new Repository(chemin, nom, description, image);
-                model.ajouterRepository(repository);
+                model.ajouterRepository(Repository.builder()
+                        .nom(nom)
+                        .chemin(chemin)
+                        .description(description)
+                        .cheminImage(image)
+                        .build()
+                );
                 estAjouter = true;
 
                 reinitialiseLesChamps();
@@ -524,7 +530,11 @@ public class FormulaireRepositoryControleur {
                 } catch (NoSuchFileException e) {
                     throw e;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    LOGGER.severe(
+                            Arrays.stream(e.getStackTrace())
+                                    .map(StackTraceElement::toString)
+                                    .collect(Collectors.joining("\n"))
+                    );
                 }
             }
             cheminImageInitial = (destinationFinal != null)
@@ -594,8 +604,8 @@ public class FormulaireRepositoryControleur {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Êtes-vous sûr de vouloir retourner à la vue principale ?");
         alert.setTitle("Confirmation");
         alert.setHeaderText("Retour à la vue principale");
-        ButtonType oui = new ButtonType("Oui, quitter", ButtonBar.ButtonData.YES);
-        ButtonType non = new ButtonType("Non rester sur la page", ButtonBar.ButtonData.NO);
+        var oui = new ButtonType("Oui, quitter", ButtonBar.ButtonData.YES);
+        var non = new ButtonType("Non rester sur la page", ButtonBar.ButtonData.NO);
         alert.getButtonTypes().setAll(oui, non);
 
         alert.showAndWait().ifPresent(type -> {

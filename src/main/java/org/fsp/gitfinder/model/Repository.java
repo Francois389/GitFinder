@@ -137,4 +137,40 @@ public class Repository implements Serializable {
     public void setCheminImage(String url) {
         this.cheminImage = url;
     }
+
+    public static RepositoryBuilder builder() {
+        return new RepositoryBuilder();
+    }
+
+    public static class RepositoryBuilder {
+        private  String chemin;
+        private  String nom;
+        private  String description;
+        private  String cheminImage;
+
+        public  RepositoryBuilder nom(String nom) {
+            this.nom = nom.trim();
+            return this;
+        }
+
+        public  RepositoryBuilder chemin(String chemin) {
+            cheminRepositoryValide(chemin);
+            this.chemin = chemin;
+            return this;
+        }
+
+        public  RepositoryBuilder description(String description) {
+            this.description = description;
+            return this;
+        }
+
+        public  RepositoryBuilder cheminImage(String cheminImage) {
+            this.cheminImage = cheminImage;
+            return this;
+        }
+
+        public  Repository build() {
+            return new Repository(chemin, nom, description, cheminImage);
+        }
+    }
 }
