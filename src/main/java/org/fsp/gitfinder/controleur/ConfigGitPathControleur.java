@@ -8,6 +8,8 @@ import org.fsp.gitfinder.GitFinderApplication;
 import org.fsp.gitfinder.model.ModelPrincipal;
 
 import java.io.File;
+import java.nio.file.OpenOption;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 public class ConfigGitPathControleur {
@@ -24,16 +26,24 @@ public class ConfigGitPathControleur {
     void initialize() {
         modelPrincipal = ModelPrincipal.getInstance();
 
-        String envPath = System.getenv("Path");
-        String gitBashPath = getGitBashPathFromPATH(envPath);
-
-        if (modelPrincipal.getGitBashPath() == null && gitBashPath != null) {
-            modelPrincipal.setGitBashPath(gitBashPath);
-        }
+        tryGetGitPath().ifPresent(path -> {
+            if (modelPrincipal.getGitBashPath() == null) modelPrincipal.setGitBashPath(path);
+        });
 
         if (modelPrincipal.getGitBashPath() != null) {
             GitFinderApplication.changerScene(GitFinderApplication.ViewPath.MAIN);
         }
+    }
+
+    private static Optional<String> tryGetGitPath() {
+        Optional<String> gitBashPath = Optional.empty();
+        try {
+            String envPath = System.getenv("Path");
+            gitBashPath = Optional.of(getGitBashPathFromPATH(envPath));
+        } catch (Exception e) {
+            LOGGER.info("Erreur lors de la lecture du Paht : " + e.getMessage());
+        }
+        return gitBashPath;
     }
 
     @FXML
