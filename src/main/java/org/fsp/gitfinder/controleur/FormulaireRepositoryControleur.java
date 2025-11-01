@@ -19,6 +19,7 @@ import org.fsp.gitfinder.model.ModelPrincipal;
 import org.fsp.gitfinder.model.Repository;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -28,9 +29,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.stream.Stream;
 
@@ -358,18 +357,24 @@ public class FormulaireRepositoryControleur {
         }
 
         //On met à jour la description du repository si celle-ci est vide
-        String cheminReadme = dossierSelectionner.getAbsolutePath() + "\\README.md";
-        File readme = new File(cheminReadme);
-        if (readme.exists()) {
-            String descriptionRecupere = getDescriptionDepuisREADME(readme);
+        FilenameFilter isReadme = (dir, name) -> name.equals("README.md");
 
-            if (descriptionInput.getText().isEmpty() || !descriptionInput.getText().equals(descriptionRecupere)) {
-                descriptionInput.setText(descriptionRecupere);
-            }
+        Optional.ofNullable(dossierSelectionner.listFiles(isReadme))
+                .flatMap(listFiles -> Arrays.stream(listFiles).findFirst())
+                .map(File::getAbsolutePath)
+                .ifPresent(cheminReadmeStr -> {
+                    File readme = new File(cheminReadmeStr);
+                    if (readme.exists()) {
+                        String descriptionRecupere = getDescriptionDepuisREADME(readme);
 
-            LOGGER.info("Contenu du README :");
-            LOGGER.info(descriptionRecupere);
-        }
+                        if (descriptionInput.getText().isEmpty() || !descriptionInput.getText().equals(descriptionRecupere)) {
+                            descriptionInput.setText(descriptionRecupere);
+                        }
+
+                        LOGGER.info("Contenu du README :");
+                        LOGGER.info(descriptionRecupere);
+                    }
+                });
     }
 
     /**
