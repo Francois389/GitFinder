@@ -4,16 +4,19 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.io.File;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings({"ConstantValue", "EqualsWithItself"})
 class RepositoryTest {
 
     private Repository repository;
+    File selfPath = new File("").getAbsoluteFile();
 
     @BeforeEach
     void setUp() {
-        repository = new Repository("E:\\GitFinder", "GitFinder", "", "");
+        repository = new Repository(selfPath.getAbsolutePath(), "GitFinder", "", "");
     }
 
     @Test
@@ -34,7 +37,7 @@ class RepositoryTest {
     @DisplayName("Le nom du repository est invalide")
     void testConstructeurNomInvalide() {
         //Given un nom vide ou null
-        String chemin = "E:\\GitFinder\\";
+        String chemin = selfPath.getAbsolutePath();
 
         String nomVide = "";
         String nomNull = null;
@@ -54,7 +57,7 @@ class RepositoryTest {
     @DisplayName("Le chemin ne contient pas de dossier .git")
     void testConstructeurCheminSansDossierGit() {
         //Given un chemin sans dossier .git
-        String chemin = "E:\\GitFinder\\src\\";
+        String chemin = new File("/src").getAbsolutePath();
         String nom = "GitFinder";
 
         //When, on crée un Repository avec ce chemin
@@ -68,7 +71,7 @@ class RepositoryTest {
     @DisplayName("Les paramètres sont valides")
     void testConstructeurParametresValides() {
         //Given des paramètres valides
-        String chemin = "E:\\GitFinder";
+        String chemin = selfPath.getAbsolutePath();
         String nom = "GitFinder";
 
         //When, on crée un Repository avec ces paramètres
