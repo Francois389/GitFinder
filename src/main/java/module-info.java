@@ -13,5 +13,7 @@ module org.fsp.gitfinder {
     opens org.fsp.gitfinder.factorie to javafx.fxml;
     exports org.fsp.gitfinder.controleur;
     opens org.fsp.gitfinder.controleur to javafx.fxml;
+    exports org.fsp.gitfinder.controleur.mediator;
+    opens org.fsp.gitfinder.controleur.mediator to javafx.fxml;
 
 }
