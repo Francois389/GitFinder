@@ -10,9 +10,8 @@ import org.fsp.gitfinder.model.Repository;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -20,6 +19,10 @@ import java.util.logging.Logger;
  * @author François de Saint Palais
  */
 public class RepositoryService {
+
+    private RepositoryService() {
+        /* This utility class should not be instantiated */
+    }
 
     private static final ModelPrincipal model = ModelPrincipal.getInstance();
     public static final String GIT_PATH_KEY = "gitPath";
@@ -45,13 +48,10 @@ public class RepositoryService {
     }
 
     public static void sauvegarderInFile(JSONObject jsonObject, String fileSaveName) {
-        try (
-                FileOutputStream fileOut = new FileOutputStream(fileSaveName);
-                ObjectOutputStream out = new ObjectOutputStream(fileOut);
-        ) {
+        try (FileWriter fileWriter = new FileWriter(fileSaveName)) {
             LOGGER.info(jsonObject.toString());
 
-            out.writeObject(jsonObject.toString());
+            jsonObject.write(fileWriter);
         } catch (IOException i) {
             i.printStackTrace();
         }
